@@ -10,8 +10,11 @@
 // Other Libs
 #include <SOIL.h>
 
+#include <thread>
+
 // Other includes
 #include "Shader.h"
+
 float max(float a, float b) {return (a > b) ? a:b; }
 
 // Function prototypes
@@ -19,8 +22,30 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 // Window dimensions
 const GLuint WIDTH = 1000, HEIGHT = 600;
-
+GLint id = 2; GLfloat value = 1.;
 // The MAIN function, from here we start the application and run the game loop
+void console_input(){
+	std::string description =
+		R"(0:  saturation
+1:  gamma_correction
+2:  brightness
+3:  contrast
+4:  color_only
+5:  hue
+6: color separation
+7: tritanopia)";
+	std::cout << description << "\n";
+	while (true) {
+		std::cout << "Enter id: ";
+		std::cin >> id;
+		std::cout << "Enter value: ";
+		std::cin >> value;
+		std::cout << "\n";
+	}
+
+};
+
+
 int main()
 {
 	// Init GLFW
@@ -48,10 +73,10 @@ int main()
 
 
 	// Build and compile our shader program
-	Shader imageProcessShader("D:\\0_visual_studio_projects\\OpenGL_2020\\Shader_colour_correction\\res\\shader.vs", "D:\\0_visual_studio_projects\\OpenGL_2020\\Shader_colour_correction\\res\\shader.frag");
+	Shader imageProcessShader("D:\\0_visual_studio_projects\\OpenGL_2020\\Shader_colour_correction\\res\\empty.vs", "D:\\0_visual_studio_projects\\OpenGL_2020\\Shader_colour_correction\\res\\color_correction.fs");
 	int width, height;
-	const char* pathToImage1 = "D:\\_my_TEMP\\images\\test_image.jpg";
-	const char* pathToImage = "F:\\downloads\\1280px-Hawaii_turtle_2.jpg";
+	const char* pathToImage = "D:\\_my_TEMP\\images\\images_jpg\\IMG_20190608_135136.jpg";
+	//const char* pathToImage = "F:\\downloads\\1280px-Hawaii_turtle_2.jpg";
 	unsigned char* image = SOIL_load_image(pathToImage, &width, &height, 0, SOIL_LOAD_RGB);
 
 	float posX=1.f, posY=1.f;
@@ -119,18 +144,8 @@ int main()
 	SOIL_free_image_data(image);
 	glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 	
-	GLint id=2; GLfloat value=1.;
 	// Game loop
-
-	std::string description =
-		R"(0:  saturation
-1:  gamma_correction
-2:  brightness
-3:  contrast
-4:  color_only
-5:  hue)";
-	std::cout << description<<"\n";
-
+	std::thread thr(console_input);
 	while (!glfwWindowShouldClose(window))
 	{
 		// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
@@ -161,11 +176,11 @@ int main()
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
 
-		std::cout << "Enter id: ";
+		/*std::cout << "Enter id: ";
 		std::cin >> id;
 		std::cout << "Enter value: ";
 		std::cin >> value;
-		std::cout << "\n";
+		std::cout << "\n";*/
 	}
 	// Properly de-allocate all resources once they've outlived their purpose
 	glDeleteVertexArrays(1, &VAO);

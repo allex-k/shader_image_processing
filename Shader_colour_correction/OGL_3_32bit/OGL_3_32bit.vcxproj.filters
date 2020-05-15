@@ -24,11 +24,11 @@
     <ClInclude Include="other_functions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BMPfile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\res\shader.fs">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\res\blur2.fs">
       <Filter>Resource Files</Filter>
     </None>
@@ -39,6 +39,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\res\empty.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\res\color_correction.fs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
@@ -56,6 +59,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="other_functions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src_color_correction_big_framebuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

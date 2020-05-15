@@ -1,5 +1,5 @@
-//блюр в два проходи (по горизонталі, по вертикалі)
-//розмір framebuffer = розмір зображення
+п»ї//Р±Р»СЋСЂ РІ РґРІР° РїСЂРѕС…РѕРґРё (РїРѕ РіРѕСЂРёР·РѕРЅС‚Р°Р»С–, РїРѕ РІРµСЂС‚РёРєР°Р»С–)
+//СЂРѕР·РјС–СЂ framebuffer = СЂРѕР·РјС–СЂ Р·РѕР±СЂР°Р¶РµРЅРЅСЏ
 
 #include <iostream>
 #define GLEW_STATIC
@@ -44,7 +44,8 @@ int main()
 	glewInit();
 
 	// Define the viewport dimensions
-	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+	//glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+	
 
 	std::string pathToRes = "D:\\0_visual_studio_projects\\OpenGL_2020\\Shader_colour_correction\\res\\";
 	Shader emptyShader(pathToRes + "empty.vs", pathToRes + "empty.fs");
@@ -55,16 +56,17 @@ int main()
 
 	int width, height;
 	GLuint imageTextureID = load_texture(pathToImage, &width, &height);
+	glViewport(0, 0, width, height);
 
 	float posX = 1.f, posY = 1.f;
-	float aspectRatio = ((float)SCR_WIDTH / SCR_HEIGHT) / ((float)width / height); //співвідношення співвідношень сторін вікна та зображення
+	float aspectRatio = ((float)SCR_WIDTH / SCR_HEIGHT) / ((float)width / height); //СЃРїС–РІРІС–РґРЅРѕС€РµРЅРЅСЏ СЃРїС–РІРІС–РґРЅРѕС€РµРЅСЊ СЃС‚РѕСЂС–РЅ РІС–РєРЅР° С‚Р° Р·РѕР±СЂР°Р¶РµРЅРЅСЏ
 
 	if (aspectRatio < 1.f) { posY = aspectRatio; }
 	else { posX = 1.f / aspectRatio; };
 
 	float scaleX = (float)SCR_WIDTH / width;
 	float scaleY = (float)SCR_HEIGHT / height;
-	// vertices2 для відображення на екран (поворот + масштаб)
+	// vertices2 РґР»СЏ РІС–РґРѕР±СЂР°Р¶РµРЅРЅСЏ РЅР° РµРєСЂР°РЅ (РїРѕРІРѕСЂРѕС‚ + РјР°СЃС€С‚Р°Р±)
 	GLfloat vertices2[] = {
 		// Positions            // Texture Coords
 		 -posX, -posY, 		0.f, 1.f,
@@ -72,7 +74,7 @@ int main()
 		posX, posY,  		1.f, 0.f,
 		-posX,  posY, 		0.f, 0.f
 	};
-	//для обробки зображеня  без повороту, без масштабування (1 - з текстури в єкранний буфер)
+	//РґР»СЏ РѕР±СЂРѕР±РєРё Р·РѕР±СЂР°Р¶РµРЅСЏ  Р±РµР· РїРѕРІРѕСЂРѕС‚Сѓ, Р±РµР· РјР°СЃС€С‚Р°Р±СѓРІР°РЅРЅСЏ (1 - Р· С‚РµРєСЃС‚СѓСЂРё РІ С”РєСЂР°РЅРЅРёР№ Р±СѓС„РµСЂ)
 	//float scale=1.0;
 	GLfloat vertices[] = {
 		// Positions            // Texture Coords
@@ -139,14 +141,14 @@ int main()
 	while (!glfwWindowShouldClose(window))
 	{
 		
-		glViewport(0, 0, width, height); //!!! зміна разміру Viewport
-		//адже розмір frameFuffer1 відрізняється від розміру вікна (стандартного кадрового буфера)
-		//frameFuffer1,2- розмір зображення, станлартний - розмір вікна
+		glViewport(0, 0, width, height); //!!! Р·РјС–РЅР° СЂР°Р·РјС–СЂСѓ Viewport
+		//Р°РґР¶Рµ СЂРѕР·РјС–СЂ frameFuffer1 РІС–РґСЂС–Р·РЅСЏС”С‚СЊСЃСЏ РІС–Рґ СЂРѕР·РјС–СЂСѓ РІС–РєРЅР° (СЃС‚Р°РЅРґР°СЂС‚РЅРѕРіРѕ РєР°РґСЂРѕРІРѕРіРѕ Р±СѓС„РµСЂР°)
+		//frameFuffer1,2- СЂРѕР·РјС–СЂ Р·РѕР±СЂР°Р¶РµРЅРЅСЏ, СЃС‚Р°РЅР»Р°СЂС‚РЅРёР№ - СЂРѕР·РјС–СЂ РІС–РєРЅР°
 		// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
 		genenate_gaussian_blur_vector(coeffVector, SIZE);
 		print_array(coeffVector, SIZE);
 
-		// З imageTexture у FrameFuffer1
+		// Р— imageTexture Сѓ FrameFuffer1
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer1);
 
 		// Render
@@ -156,7 +158,7 @@ int main()
 		// Activate shader
 		imageProcessShader.Use();
 
-		// З imageTexture у FrameFuffer1
+		// Р— imageTexture Сѓ FrameFuffer1
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, imageTextureID);
 		glUniform1i(glGetUniformLocation(imageProcessShader.Program, "Texture"), 0);
@@ -169,7 +171,7 @@ int main()
 		glBindVertexArray(0);
 
 		//----------------------------------------------------------------------------
-		// З frameFuffer1 у frameFuffer2
+		// Р— frameFuffer1 Сѓ frameFuffer2
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer2);
 
 		// Render
@@ -179,7 +181,7 @@ int main()
 		// Activate shader
 		imageProcessShader.Use();
 
-		// З imageTexture у FrameFuffer1
+		// Р— imageTexture Сѓ FrameFuffer1
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, frameBuffTexture1);
 		glUniform1i(glGetUniformLocation(imageProcessShader.Program, "Texture"), 0);
@@ -191,7 +193,7 @@ int main()
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
-		//з frameFuffer2 у вікно
+		//Р· frameFuffer2 Сѓ РІС–РєРЅРѕ
 		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		//glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
@@ -201,7 +203,7 @@ int main()
 		glBindVertexArray(VAO2);
 		//glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, frameBuffTexture2);
-		glUniform1i(glGetUniformLocation(imageProcessShader.Program, "Texture"), 0);
+		glUniform1i(glGetUniformLocation(emptyShader.Program, "Texture"), 0);
 		
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -225,7 +227,7 @@ int main()
 	return 0;
 }
 
-//вспомогательные функции
+//РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ С„СѓРЅРєС†РёРё
 void generate_frame_buffer_and_texture(GLint width, GLint height, GLuint* frameBuffer, GLuint* frameBuffTexture) {
 	glGenFramebuffers(1, frameBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, *frameBuffer);

@@ -1,21 +1,18 @@
-//блюр в два проходи (по горизонталі, по вертикалі)
-//розмір framebuffer = розмір вікна
+//цветокоррекция
+//розмір framebuffer = розмір зображення
+//корекція накоплюється - на наступній ітерації 
+//використовується оброблене зображення
+//з попередньої ітерації
 #include <iostream>
-
-// GLEW
 #define GLEW_STATIC
 #include <GL/glew.h>
-
-// GLFW
 #include <GLFW/glfw3.h>
-
-// Other Libs
 #include <SOIL.h>
 
-// Other includes
 #include "Shader.h"
-#include"generate_blur_matrix.h"
+//#include"generate_blur_matrix.h"
 #include "other_functions.h"
+#include "BMPfile.h"
 
 float max(float a, float b) { return (a > b) ? a : b; }
 // Function prototypes
@@ -24,7 +21,7 @@ void generate_frame_buffer_and_texture(GLint width, GLint height, GLuint* frameB
 GLuint load_texture(std::string path, GLint* width, GLint* height);
 
 // Window dimensions
-const GLint SCR_WIDTH = 1200, SCR_HEIGHT = 800;
+const GLint SCR_WIDTH = 1200, SCR_HEIGHT = 1000;
 
 // The MAIN function, from here we start the application and run the game loop
 int main()
@@ -50,17 +47,24 @@ int main()
 	glewInit();
 
 	// Define the viewport dimensions
-	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+	//glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+
 
 	std::string pathToRes = "D:\\0_visual_studio_projects\\OpenGL_2020\\Shader_colour_correction\\res\\";
-	Shader emptyShader(pathToRes+"empty.vs", pathToRes+"empty.fs");
-	Shader imageProcessShader(pathToRes+"empty.vs", pathToRes+"blur2.fs");
+	Shader emptyShader(pathToRes + "empty.vs", pathToRes + "empty.fs");
+	Shader imageProcessShader(pathToRes + "empty.vs", pathToRes + "color_correction.fs");
 
-	std::string pathToImage = "D:\\_my_TEMP\\images\\images_jpg\\IMG_20190608_135242.jpg";
+	std::string pathToImage = "D:\\_my_TEMP\\images\\images_bmp\\image_800_600_1.bmp";
 	const char* pathToImage1 = "F:\\downloads\\1280px-Hawaii_turtle_2.jpg";
-	
-	int width, height;	
+
+	int width, height;
 	GLuint imageTextureID = load_texture(pathToImage, &width, &height);
+	glViewport(0, 0, width, height);
+
+	//std::string pathToBMPsrc = "D:\\_my_TEMP\\images\\images_bmp\\image_12MP_1.bmp";
+	//std::string pathToBMPdest = "D:\\_my_TEMP\\images\\OGL_result.bmp";
+	//BMPfile bmpFile(pathToBMPsrc, pathToBMPdest);
+	//char* imagePixelsArr = new char[width*height*3];
 
 	float posX = 1.f, posY = 1.f;
 	float aspectRatio = ((float)SCR_WIDTH / SCR_HEIGHT) / ((float)width / height); //співвідношення співвідношень сторін вікна та зображення
@@ -68,15 +72,18 @@ int main()
 	if (aspectRatio < 1.f) { posY = aspectRatio; }
 	else { posX = 1.f / aspectRatio; };
 
-	// vertices1 для завантаження зображення в екранний буфер (поворот + масштаб)
-	GLfloat vertices1[] = {
+	float scaleX = (float)SCR_WIDTH / width;
+	float scaleY = (float)SCR_HEIGHT / height;
+	// vertices2 для відображення на екран (поворот + масштаб)
+	GLfloat vertices2[] = {
 		// Positions            // Texture Coords
 		 -posX, -posY, 		0.f, 1.f,
 		 posX, -posY, 		1.0f, 1.f,
-		 posX, posY,  		1.f, 0.f,
+		posX, posY,  		1.f, 0.f,
 		-posX,  posY, 		0.f, 0.f
 	};
-	//для обробки зображеня  без повороту, без масштабування
+	//для обробки зображеня  без повороту, без масштабування (1 - з текстури в єкранний буфер)
+	//float scale=1.0;
 	GLfloat vertices[] = {
 		// Positions            // Texture Coords
 		 -1, -1, 		0.f, 0.f,
@@ -94,11 +101,11 @@ int main()
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
-	
+
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
-	
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
@@ -108,15 +115,16 @@ int main()
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
 	glBindVertexArray(0);
-	//----------------------------------------------------------------------
-	GLuint VAO1, VBO1;
-	glGenVertexArrays(1, &VAO1);
-	glGenBuffers(1, &VBO1);
+
+	//-------------------------------------------------------------------------
+	GLuint VAO2, VBO2;
+	glGenVertexArrays(1, &VAO2);
+	glGenBuffers(1, &VBO2);
 	//glGenBuffers(1, &EBO1);
 
-	glBindVertexArray(VAO1);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO1);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), &vertices1, GL_STATIC_DRAW);
+	glBindVertexArray(VAO2);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), &vertices2, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
@@ -127,69 +135,105 @@ int main()
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
 	glBindVertexArray(0);
-	
-	
+
+
 	//################################ generate FrameBuffer and texture ##############################
 	// framebuffer configuration
-	GLuint frameBuffer, frameBuffTexture;
-	generate_frame_buffer_and_texture(SCR_WIDTH, SCR_HEIGHT, &frameBuffer, &frameBuffTexture);
+	GLuint frameBuffer1, frameBuffTexture1, frameBuffer2, frameBuffTexture2;
+	generate_frame_buffer_and_texture(width, height, &frameBuffer1, &frameBuffTexture1);
+	generate_frame_buffer_and_texture(width, height, &frameBuffer2, &frameBuffTexture2);
 
-	const int MAX_SIZE = 512;
-	float coeffVector[MAX_SIZE];
-	GLint SIZE = 10;
+	GLint id = 2; GLfloat value = 1;
+	// Game loop
+
+	std::string description =
+		R"(0:  saturation
+1:  gamma_correction
+2:  brightness
+3:  contrast
+4:  color_only
+5:  hue
+6: color separation)";
+	std::cout << description << "\n";
+
+	//з текстури frameBuffer1
+	glViewport(0, 0, width, height); 
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer1);
+	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	emptyShader.Use();
+	glBindVertexArray(VAO);
+	//glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, imageTextureID);
+	glUniform1i(glGetUniformLocation(emptyShader.Program, "Texture"), 0);
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	while (!glfwWindowShouldClose(window))
 	{
-		genenate_gaussian_blur_vector(coeffVector, SIZE);
-		print_array(coeffVector, SIZE);
 
-		glfwPollEvents();
-		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+		glViewport(0, 0, width, height); //!!! зміна разміру Viewport
+		//адже розмір frameFuffer1 відрізняється від розміру вікна (стандартного кадрового буфера)
+		//frameFuffer1,2- розмір зображення, станлартний - розмір вікна
+		// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
+
+		// З FrameFuffer1 у FrameFuffer2
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer2);
+
 		glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		imageProcessShader.Use();
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, imageTextureID);
+		glBindTexture(GL_TEXTURE_2D, frameBuffTexture1);
 		glUniform1i(glGetUniformLocation(imageProcessShader.Program, "Texture"), 0);
-		glUniform2f(glGetUniformLocation(imageProcessShader.Program, "direction"), 1.0 / SCR_WIDTH, 0.0);
-		glUniform1i(glGetUniformLocation(imageProcessShader.Program, "SIZE"), SIZE);
-		glUniform1fv(glGetUniformLocation(imageProcessShader.Program, "coeffVector"), SIZE, coeffVector);
-
-		// Draw
-		glBindVertexArray(VAO1);
+		glUniform1i(glGetUniformLocation(imageProcessShader.Program, "id"), id);
+		glUniform1f(glGetUniformLocation(imageProcessShader.Program, "value"), value);	// Draw
+		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
-		//----------------------------------------------------------------------------
+		//----------------------у файл-------------------------------
+		//glReadPixels(0, 0, width, height, GL_BGR_EXT, GL_UNSIGNED_BYTE, imagePixelsArr);
+		//bmpFile.save_to_file(imagePixelsArr);
+
+		//з frameFuffer2  на екран
+		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		//glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		imageProcessShader.Use();
-		glBindVertexArray(VAO);
+		emptyShader.Use();
+		glBindVertexArray(VAO2);
 		//glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, frameBuffTexture);
-		glUniform1i(glGetUniformLocation(imageProcessShader.Program, "Texture"), 0);
-		glUniform2f(glGetUniformLocation(imageProcessShader.Program, "direction"), 0.0, 1.0/SCR_HEIGHT);
-		glUniform1i(glGetUniformLocation(imageProcessShader.Program, "SIZE"), SIZE);
-		glUniform1fv(glGetUniformLocation(imageProcessShader.Program, "coeffVector"), SIZE, coeffVector);
+		glBindTexture(GL_TEXTURE_2D, frameBuffTexture2);
+		glUniform1i(glGetUniformLocation(emptyShader.Program, "Texture"), 0);
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
 
-
-		std::cout << "Enter SIZE: ";
-		std::cin >> SIZE;
-
+		std::cout << "Enter id: ";
+		std::cin >> id;
+		std::cout << "Enter value: ";
+		std::cin >> value;
 		std::cout << "\n";
+
+		//swap framebuffers
+		GLuint temp = frameBuffer1;
+		frameBuffer1 = frameBuffer2;
+		frameBuffer2 = temp;
+
+		temp = frameBuffTexture1;
+		frameBuffTexture1 = frameBuffTexture2;
+		frameBuffTexture2 = temp;
 	}
 	// Properly de-allocate all resources once they've outlived their purpose
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
+	glDeleteVertexArrays(1, &VAO); glDeleteVertexArrays(1, &VAO2);
+	glDeleteBuffers(1, &VBO); glDeleteBuffers(1, &VBO2);
 	glDeleteBuffers(1, &EBO);
 	// Terminate GLFW, clearing any resources allocated by GLFW.
 	glfwTerminate();
@@ -241,6 +285,7 @@ GLuint load_texture(std::string path, GLint* width, GLint* height) {
 	glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 	return textureID;
 }
+
 // Is called whenever a key is pressed/released via GLFW
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
