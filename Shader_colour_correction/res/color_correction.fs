@@ -59,6 +59,9 @@ vec3 hue(vec3 col, float coeff){
     hsv[0]+=coeff;
     return hsv2rgb(hsv);
 }
+vec3 tritanopia_color_blindness(vec3 col){
+	return vec3(col.r, col.g, col.g);
+}
 
 void main(){
 	
@@ -72,6 +75,12 @@ void main(){
 		case 3: color = contrast(color, value); break;
 		case 4: color = color_only(color); break;
 		case 5: color = hue(color, value); break;
+		case 6:
+			color.r = texture(Texture, TexCoord+vec2(value, 0.)).r;
+			color.b = texture(Texture, TexCoord+vec2(-value, 0.)).b;
+			break;
+		case 7: color = tritanopia_color_blindness(color); break;
+		
 	}
 
 	//color = saturation(color, 1.5);
