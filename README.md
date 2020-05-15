@@ -19,3 +19,6 @@ To choose another photo you need to rewrite path in src_main.cpp(will be changed
 
 #
 ### This programm is still in development and more options will be added soon
+
+##Screenshots command line mode
+![](screenshots/screenshot1.PNG)
