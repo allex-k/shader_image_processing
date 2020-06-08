@@ -3,8 +3,8 @@
 //корекція накоплюється - на наступній ітерації 
 //використовується оброблене зображення
 //з попередньої ітерації
-//#define ENTER_PATH_TO_IMAGE
-//#define ENTER_PATH_TO_RESULT
+#define ENTER_PATH_TO_IMAGE
+#define ENTER_PATH_TO_RESULT
 
 #include <iostream>
 #define GLEW_STATIC
@@ -30,12 +30,14 @@ int main()
 
 	std::string pathToRes = "res\\";
 	std::string pathToImage = pathToRes + "image.jpg";
+	std::string bmpDestPath = pathToRes + "result.bmp";
+
 #ifdef ENTER_PATH_TO_IMAGE
 	std::cout << "Enter path to image: \n";
 	std::getline(std::cin, pathToImage);
 	std::cout << pathToImage<<std::endl;
 #endif
-	std::string bmpDestPath = pathToRes + "result.bmp";
+	
 #ifdef ENTER_PATH_TO_RESULT 
 	std::cout << "Enter path to result(*.bmp): \n";
 	std::getline(std::cin, bmpDestPath);
@@ -151,13 +153,17 @@ int main()
 	GLint id = 1; GLfloat value = 1;
 
 	std::string description =
-		R"(0:  saturation
-1:  gamma_correction
-2:  brightness
-3:  contrast
-4:  color_only
-5:  hue
-6: color separation)";
+		R"(0: saturation
+1: gamma_correction
+2: brightness
+3: contrast
+4: color_only
+5: hue
+6: dispersion(chromatic aberration)
+7: rgg
+8: rbb
+9: temperature
+88: undo)";
 	std::cout << description << "\n";
 
 	//Рендер початкового зображення з текстури у frameBuffer1 
@@ -197,7 +203,7 @@ int main()
 		glClientWaitSync(fence, GL_SYNC_FLUSH_COMMANDS_BIT, 500 * 1000000);
 
 		glfwSwapBuffers(window);
-
+		
 		//################################## з frameFuffer2 у файл ####################################################
 		glViewport(0, 0, imageWidth, imageHeight); 
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer2);
