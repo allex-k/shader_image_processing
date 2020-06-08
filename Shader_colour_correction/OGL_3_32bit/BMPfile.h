@@ -2,63 +2,57 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-const unsigned int HEADER_SIZE = 54;
+
+#define HEADER_SIZE 54
 class BMPfile {
 private:
-	char* buffHeader;
-	char* pixelsArr;
-	unsigned int fileSize, imageSize, width, height;
-	std::ifstream srcFile;
-	std::ofstream destFile;
-
-	std::ios::pos_type get_file_size(std::ifstream* fileptr) {
-		fileptr->seekg(0, std::ios::end);
-		std::ios::pos_type filesize = fileptr->tellg();
-		fileptr->seekg(0, std::ios::beg);
-		return filesize;
-	}
-	void get_sizes() {
-		memcpy(&width, &buffHeader[18], 4);    memcpy(&height, &buffHeader[22], 4);
-	}
-
+	uint8_t *buffHeader;
+	size_t fileSize, imageSize, width, height;
+	std::ifstream headerFile;
+	std::string destPath;
 
 public:
-	BMPfile(std::string srcPath, std::string destPath) {
-		srcFile = std::ifstream(srcPath, std::ios::in | std::ios::binary);
-		if (!srcFile) {
-			std::cout << "ERROR with opening file: " + srcPath;
+	BMPfile(std::string headerPath, std::string _destPath, uint32_t _width, uint32_t _height) 
+	{
+		headerFile = std::ifstream(headerPath, std::ios::in | std::ios::binary);
+		if (!headerFile) std::cout << "ERROR with header file: " + headerPath;
+		else
+		{
+			destPath = _destPath;
+			width = _width; height = _height;
+			imageSize = width * height * 3;
+			fileSize = HEADER_SIZE + imageSize;
+
+			buffHeader = new uint8_t[HEADER_SIZE];
+			headerFile.read((char *)buffHeader, HEADER_SIZE);
+			headerFile.close();
+			//get_sizes();
+
+			memcpy(&buffHeader[18], &width, 4);
+			memcpy(&buffHeader[22], &height, 4);
+			memcpy(&buffHeader[2], &fileSize, 4);
 		}
-		else {
-			fileSize = get_file_size(&srcFile);
-			imageSize = fileSize - HEADER_SIZE;
-
-			buffHeader = new char[HEADER_SIZE];
-			//pixelsArr = new byte[imageSize];
-
-			srcFile.read((char *)buffHeader, HEADER_SIZE);
-			//srcFile.read((char *)pixelsArrByte, imageSize);
-
-			get_sizes();
-			srcFile.close();
-		}
-		destFile=std::ofstream(destPath, std::ios::out | std::ios::binary);
-		if (!destFile) {
-			std::cout << "ERROR with opening file: " + destPath;
-		}
-
 	}
-	void save_to_file(char* newPixelsArr) {
+
+	
+	void save_to_file(uint8_t* newPixelsArr) {
+		std::ofstream destFile(destPath, std::ios::out | std::ios::binary);
+		if (!destFile) std::cout << "ERROR with opening file: " + destPath;
+
 		destFile.write((char *)buffHeader, HEADER_SIZE);
 		destFile.write((char *)newPixelsArr, imageSize);
 		destFile.seekp(std::ios::beg);
-
-	}
-	BMPfile() {
 		destFile.close();
+	}
+	size_t get_width() { return width; }
+	size_t get_height() { return height; }
+	size_t get_imageSize() { return imageSize; }
+	size_t get_fileSize() { return fileSize; }
+
+	~BMPfile() {
 		delete[] buffHeader; buffHeader = nullptr;
-		delete[] pixelsArr; pixelsArr = nullptr;
 
 	}
-	
+
 
 };
