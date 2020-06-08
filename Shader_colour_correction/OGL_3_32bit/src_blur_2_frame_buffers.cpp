@@ -16,6 +16,10 @@
 #include "Shader.h"
 #include"generate_blur_matrix.h"
 #include "other_functions.h"
+#include <thread>
+#include <mutex>
+#include <chrono>
+#include <thread>
 
 float max(float a, float b) { return (a > b) ? a : b; }
 // Function prototypes
@@ -24,7 +28,23 @@ void generate_frame_buffer_and_texture(GLint width, GLint height, GLuint* frameB
 GLuint load_texture(std::string path, GLint* width, GLint* height);
 
 // Window dimensions
-const GLint SCR_WIDTH = 1200, SCR_HEIGHT = 800;
+const GLint SCR_WIDTH = 640, SCR_HEIGHT = 480;
+GLint SIZE = 10;
+std::mutex mutex1;
+
+void console_input() {
+	while (1) {
+		mutex1.lock();
+		std::cout << "Enter SIZE: ";
+		std::cin >> SIZE;
+		std::cout << "\n";
+
+		mutex1.unlock();
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	}
+
+};
+
 
 // The MAIN function, from here we start the application and run the game loop
 int main()
@@ -53,13 +73,13 @@ int main()
 	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 
 	std::string pathToRes = "D:\\0_visual_studio_projects\\OpenGL_2020\\Shader_colour_correction\\res\\";
-	Shader emptyShader(pathToRes+"empty.vs", pathToRes+"empty.fs");
-	Shader imageProcessShader(pathToRes+"empty.vs", pathToRes+"blur2.fs");
+	Shader emptyShader(pathToRes + "empty.vs", pathToRes + "empty.fs");
+	Shader imageProcessShader(pathToRes + "empty.vs", pathToRes + "blur2.fs");
 
 	std::string pathToImage = "D:\\_my_TEMP\\images\\images_jpg\\IMG_20190608_135242.jpg";
-	const char* pathToImage1 = "F:\\downloads\\1280px-Hawaii_turtle_2.jpg";
-	
-	int width, height;	
+	//std::string pathToImage = "test_image.jpg";
+
+	int width, height;
 	GLuint imageTextureID = load_texture(pathToImage, &width, &height);
 
 	float posX = 1.f, posY = 1.f;
@@ -94,11 +114,11 @@ int main()
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
-	
+
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
-	
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
@@ -127,8 +147,8 @@ int main()
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
 	glBindVertexArray(0);
-	
-	
+
+
 	//################################ generate FrameBuffer and texture ##############################
 	// framebuffer configuration
 	GLuint frameBuffer, frameBuffTexture;
@@ -136,20 +156,25 @@ int main()
 
 	const int MAX_SIZE = 512;
 	float coeffVector[MAX_SIZE];
-	GLint SIZE = 10;
+	imageProcessShader.Use();
 
+	std::thread thr(console_input);
+
+	//glfwSwapInterval();
 	while (!glfwWindowShouldClose(window))
 	{
+		//std::cout << "In while Loop!\n";
+		mutex1.lock();
 		genenate_gaussian_blur_vector(coeffVector, SIZE);
-		print_array(coeffVector, SIZE);
+		//print_array(coeffVector, SIZE);
 
 		glfwPollEvents();
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-		glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
+		//glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		imageProcessShader.Use();
-
+		//
+		//imageProcessShader.Use();
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, imageTextureID);
 		glUniform1i(glGetUniformLocation(imageProcessShader.Program, "Texture"), 0);
@@ -167,25 +192,26 @@ int main()
 		//glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		imageProcessShader.Use();
+		//imageProcessShader.Use();
 		glBindVertexArray(VAO);
 		//glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, frameBuffTexture);
 		glUniform1i(glGetUniformLocation(imageProcessShader.Program, "Texture"), 0);
-		glUniform2f(glGetUniformLocation(imageProcessShader.Program, "direction"), 0.0, 1.0/SCR_HEIGHT);
+		glUniform2f(glGetUniformLocation(imageProcessShader.Program, "direction"), 0.0, 1.0 / SCR_HEIGHT);
 		glUniform1i(glGetUniformLocation(imageProcessShader.Program, "SIZE"), SIZE);
 		glUniform1fv(glGetUniformLocation(imageProcessShader.Program, "coeffVector"), SIZE, coeffVector);
-
+		//imageProcessShader.Use();
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-		// Swap the screen buffers
+		
+		{ //необхідно для intel hd grapfics
+			GLsync fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+			glClientWaitSync(fence, GL_SYNC_FLUSH_COMMANDS_BIT, 1000000);
+		}
+		
 		glfwSwapBuffers(window);
-
-
-		std::cout << "Enter SIZE: ";
-		std::cin >> SIZE;
-
-		std::cout << "\n";
+		
+		mutex1.unlock();
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
 	// Properly de-allocate all resources once they've outlived their purpose
 	glDeleteVertexArrays(1, &VAO);
