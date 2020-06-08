@@ -11,7 +11,10 @@ uniform vec2 d; //d-розмір одного пікселя по осях х, y відповідно
 const int MAX_SIZE  = 32;
 const int MAX_SIZE_2  = MAX_SIZE*MAX_SIZE;
 
-const float[MAX_SIZE_2] coeffMatrix = float[MAX_SIZE_2](1.0);
+float[MAX_SIZE_2] coeffMatrix;
+//const float coeffMatrix[MAX_SIZE_2]  = float[MAX_SIZE_2](1.0);
+
+
 
 void main(){
 	
