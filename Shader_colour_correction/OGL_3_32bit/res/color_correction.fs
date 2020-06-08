@@ -59,10 +59,20 @@ vec3 hue(vec3 col, float coeff){
     hsv[0]+=coeff;
     return hsv2rgb(hsv);
 }
-vec3 tritanopia_color_blindness(vec3 col){
-	return vec3(col.r, col.g, col.g);
-}
+vec3 rgg(vec3 col){return vec3(col.r, col.g, col.g);}
+vec3 rbb(vec3 col){return vec3(col.r, col.b, col.b);}
 
+vec3 temperature(vec3 col, float coeff){
+	float val = abs(coeff);
+	if (coeff>0.) return vec3(col.r, col.g-0.5*val*col.g, col.b-val*col.b);
+	else return vec3(col.r-val*col.r, col.g-0.5*val*col.g, col.b);
+	}
+vec3 temperature_v2(vec3 col, float coeff){
+	float val = abs(coeff);
+	if (coeff>0.) return vec3(col.r+val*col.r, col.g, col.b-val*col.b);
+	else return vec3(col.r-val*col.r, col.g, col.b+val*col.b);
+	}	
+	
 void main(){
 	
     fragColor = texture(Texture, TexCoord);
@@ -79,13 +89,10 @@ void main(){
 			color.r = texture(Texture, TexCoord+vec2(value, 0.)).r;
 			color.b = texture(Texture, TexCoord+vec2(-value, 0.)).b;
 			break;
-		case 7: color = tritanopia_color_blindness(color); break;
-		
-	}
-
-	//color = saturation(color, 1.5);
-	//color = hue(color, -0.08);
-	
+		case 7: color = rgg(color); break;
+		case 8: color = rbb(color); break;
+		case 9: color = temperature_v2(color, value); break;
+	}	
 
 	fragColor = vec4(color, fragColor.a);
 	
