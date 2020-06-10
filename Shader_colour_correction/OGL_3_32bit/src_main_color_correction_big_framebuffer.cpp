@@ -3,47 +3,52 @@
 //корекція накоплюється - на наступній ітерації 
 //використовується оброблене зображення
 //з попередньої ітерації
-#define ENTER_PATH_TO_IMAGE
-#define ENTER_PATH_TO_RESULT
+//#define ENTER_PATH_TO_IMAGE
+//#define ENTER_PATH_TO_RESULT
 
 #include <iostream>
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <SOIL.h>
+//#include <SOIL.h>
 //#include <windows.h>
 #include "Shader.h"
 //#include"generate_blur_matrix.h"
 #include "other_functions.h"
-#include "BMPfile.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 
 float max(float a, float b) { return (a > b) ? a : b; }
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void generate_frame_buffer_and_texture(GLint imageWidth, GLint imageHeight, GLuint* frameBuffer, GLuint* frameBuffTexture);
-GLuint load_texture(std::string path, GLint* imageWidth, GLint* imageHeight);
+GLuint load_texture(const std::string path, GLint* imageWidth, GLint* imageHeight, int* nrComponents);
+void save_image_to_file(std::string path, int width, int height, int nrComponents, const void *data);
 
+GLenum nComponentsToGLConst[5] = { 0, GL_RED , GL_RG, GL_RGB, GL_RGBA };
 
 // The MAIN function, from here we start the application and run the game loop
 int main()
 {
 	const GLint WINDOW_WIDTH = 800, WINDOW_HEIGHT = 500;
 
-	std::string pathToRes = "res\\";
-	std::string pathToImage = pathToRes + "image.jpg";
-	std::string bmpDestPath = pathToRes + "result.bmp";
+	std::string resPath = "res\\";
+	std::string srcImagePath = resPath + "image.jpg";
+	std::string destImagePath = resPath + "result.bmp";
 
 #ifdef ENTER_PATH_TO_IMAGE
 	std::cout << "Enter path to image: \n";
-	std::getline(std::cin, pathToImage);
-	std::cout << pathToImage<<std::endl;
+	std::getline(std::cin, srcImagePath);
+	std::cout << srcImagePath<<std::endl;
 #endif
 	
 #ifdef ENTER_PATH_TO_RESULT 
 	std::cout << "Enter path to result(*.bmp): \n";
-	std::getline(std::cin, bmpDestPath);
-	std::cout << bmpDestPath<<std::endl;
+	std::getline(std::cin, destImagePath);
+	std::cout << destImagePath<<std::endl;
 #endif
-	std::string bmpHeaderPath = pathToRes + "bmp_header.bin";
 	
 	/*TCHAR NPath[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH, NPath);
@@ -64,15 +69,15 @@ int main()
 	glewExperimental = GL_TRUE;
 	glewInit();
 
-	Shader emptyShader(pathToRes + "empty.vs", pathToRes + "empty.fs");
-	Shader imageProcessShader(pathToRes + "empty.vs", pathToRes + "color_correction.fs");
+	Shader emptyShader(resPath + "empty.vs", resPath + "empty.fs");
+	Shader imageProcessShader(resPath + "empty.vs", resPath + "color_correction.fs");
 
-	int imageWidth, imageHeight;
-	GLuint imageTextureID = load_texture(pathToImage, &imageWidth, &imageHeight);
+	int imageWidth, imageHeight, nrComponents;
+	GLuint imageTextureID = load_texture(srcImagePath, &imageWidth, &imageHeight, &nrComponents);
+	std::cout << "imageWidth = " << imageWidth << "\nimageHeight = " << imageHeight << std::endl;
 	glViewport(0, 0, imageWidth, imageHeight);
 
-	BMPfile bmpFile(bmpHeaderPath, bmpDestPath, imageWidth, imageHeight);
-	uint8_t* imagePixelsArr = new uint8_t[bmpFile.get_imageSize()];
+	uint8_t* imagePixelsArr = new uint8_t[imageWidth*imageHeight*nrComponents];
 
 	float posX = 1.f, posY = 1.f;
 	float aspectRatio = ((float)WINDOW_WIDTH / WINDOW_HEIGHT) / ((float)imageWidth / imageHeight); //співвідношення співвідношень сторін вікна та зображення
@@ -207,9 +212,8 @@ int main()
 		//################################## з frameFuffer2 у файл ####################################################
 		glViewport(0, 0, imageWidth, imageHeight); 
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer2);
-		glReadPixels(0, 0, imageWidth, imageHeight, GL_BGR_EXT, GL_UNSIGNED_BYTE, imagePixelsArr);
-		bmpFile.save_to_file(imagePixelsArr);
-
+		glReadPixels(0, 0, imageWidth, imageHeight, nComponentsToGLConst[nrComponents], GL_UNSIGNED_BYTE, imagePixelsArr);
+		save_image_to_file(destImagePath.c_str(), imageWidth, imageHeight, nrComponents, imagePixelsArr);
 		std::cout << "Enter id: ";
 		if (std::cin.fail()) // если предыдущее извлечение оказалось неудачным,
 		{
@@ -267,27 +271,40 @@ void generate_frame_buffer_and_texture(GLint imageWidth, GLint imageHeight, GLui
 
 }
 
-GLuint load_texture(std::string path, GLint* imageWidth, GLint* imageHeight) {
-	uint8_t* data = SOIL_load_image(path.c_str(), imageWidth, imageHeight, 0, SOIL_LOAD_RGB);
-
-	GLuint textureID;
-	// ====================
-	// Texture 1
-	// ====================
+GLuint load_texture(const std::string path, GLint* imageWidth, GLint* imageHeight, int* nrComponents)
+{
+	unsigned int textureID;
 	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_2D, textureID); // All upcoming GL_TEXTURE_2D operations now have effect on our texture object
-	// Set our texture parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);	// Set texture wrapping to GL_REPEAT
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-	// Set texture filtering
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// Load, create texture and generate mipmaps
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, *imageWidth, *imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	SOIL_free_image_data(data);
-	glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+	unsigned char *data = stbi_load(path.c_str(), imageWidth, imageHeight, nrComponents, 0);
+	if (data)
+	{
+		GLenum format = nComponentsToGLConst[*nrComponents];
+		/*if (*nrComponents == 1)
+			format = GL_RED;
+		else if (*nrComponents == 3)
+			format = GL_RGB;
+		else if (*nrComponents == 4)
+			format = GL_RGBA;*/
+
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, *imageWidth, *imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, *imageWidth, *imageHeight, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		stbi_image_free(data);
+	}
+	else
+	{
+		std::cout << "Texture failed to load at path: " << path << std::endl;
+		stbi_image_free(data);
+	}
+
 	return textureID;
 }
 
@@ -296,4 +313,17 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
+}
+
+void save_image_to_file(std::string path, int width, int height, int nrComponents, const void *data) {
+	size_t index = path.rfind(".");
+	std::string ext = path.substr(index + 1); //ext - file extension
+
+	if (ext == "png" || ext == "PNG")
+		stbi_write_png(path.c_str(), width, height, nrComponents, data,  0);
+	else 
+		if (ext == "jpg" || ext == "jpeg" || ext == "JPG" || ext == "JPEG")
+			stbi_write_jpg(path.c_str(), width, height, nrComponents, data, 90);
+		else 
+			stbi_write_bmp(path.c_str(), width, height, nrComponents, data);
 }
