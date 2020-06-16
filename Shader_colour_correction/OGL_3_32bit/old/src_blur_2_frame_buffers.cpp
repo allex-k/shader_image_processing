@@ -1,5 +1,5 @@
-//блюр в два проходи (по горизонталі, по вертикалі)
-//розмір framebuffer = розмір вікна
+//ГЎГ«ГѕГ° Гў Г¤ГўГ  ГЇГ°Г®ГµГ®Г¤ГЁ (ГЇГ® ГЈГ®Г°ГЁГ§Г®Г­ГІГ Г«Ві, ГЇГ® ГўГҐГ°ГІГЁГЄГ Г«Ві)
+//Г°Г®Г§Г¬ВіГ° framebuffer = Г°Г®Г§Г¬ВіГ° ГўВіГЄГ­Г 
 #include <iostream>
 
 // GLEW
@@ -83,12 +83,12 @@ int main()
 	GLuint imageTextureID = load_texture(pathToImage, &width, &height);
 
 	float posX = 1.f, posY = 1.f;
-	float aspectRatio = ((float)SCR_WIDTH / SCR_HEIGHT) / ((float)width / height); //співвідношення співвідношень сторін вікна та зображення
+	float aspectRatio = ((float)SCR_WIDTH / SCR_HEIGHT) / ((float)width / height); //Г±ГЇВіГўГўВіГ¤Г­Г®ГёГҐГ­Г­Гї Г±ГЇВіГўГўВіГ¤Г­Г®ГёГҐГ­Гј Г±ГІГ®Г°ВіГ­ ГўВіГЄГ­Г  ГІГ  Г§Г®ГЎГ°Г Г¦ГҐГ­Г­Гї
 
 	if (aspectRatio < 1.f) { posY = aspectRatio; }
 	else { posX = 1.f / aspectRatio; };
 
-	// vertices1 для завантаження зображення в екранний буфер (поворот + масштаб)
+	// vertices1 Г¤Г«Гї Г§Г ГўГ Г­ГІГ Г¦ГҐГ­Г­Гї Г§Г®ГЎГ°Г Г¦ГҐГ­Г­Гї Гў ГҐГЄГ°Г Г­Г­ГЁГ© ГЎГіГґГҐГ° (ГЇГ®ГўГ®Г°Г®ГІ + Г¬Г Г±ГёГІГ ГЎ)
 	GLfloat vertices1[] = {
 		// Positions            // Texture Coords
 		 -posX, -posY, 		0.f, 1.f,
@@ -96,7 +96,7 @@ int main()
 		 posX, posY,  		1.f, 0.f,
 		-posX,  posY, 		0.f, 0.f
 	};
-	//для обробки зображеня  без повороту, без масштабування
+	//Г¤Г«Гї Г®ГЎГ°Г®ГЎГЄГЁ Г§Г®ГЎГ°Г Г¦ГҐГ­Гї  ГЎГҐГ§ ГЇГ®ГўГ®Г°Г®ГІГі, ГЎГҐГ§ Г¬Г Г±ГёГІГ ГЎГіГўГ Г­Г­Гї
 	GLfloat vertices[] = {
 		// Positions            // Texture Coords
 		 -1, -1, 		0.f, 0.f,
@@ -203,7 +203,7 @@ int main()
 		//imageProcessShader.Use();
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		
-		{ //необхідно для intel hd grapfics
+		{ //Г­ГҐГ®ГЎГµВіГ¤Г­Г® Г¤Г«Гї intel hd grapfics
 			GLsync fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 			glClientWaitSync(fence, GL_SYNC_FLUSH_COMMANDS_BIT, 1000000);
 		}
@@ -222,7 +222,7 @@ int main()
 	return 0;
 }
 
-//вспомогательные функции
+//ГўГ±ГЇГ®Г¬Г®ГЈГ ГІГҐГ«ГјГ­Г»ГҐ ГґГіГ­ГЄГ¶ГЁГЁ
 void generate_frame_buffer_and_texture(GLint width, GLint height, GLuint* frameBuffer, GLuint* frameBuffTexture) {
 	glGenFramebuffers(1, frameBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, *frameBuffer);
