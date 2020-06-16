@@ -23,7 +23,7 @@ void normalize_array(float *arr, int n) {
 void genenate_blur_vector_parabola(float* blurVector, int n, float power) {
 	int i; float value, inorm;
 	for (i = 0; i < n; i++) {
-		inorm = (float)i / (n-1) * 2.f - 1.f; //ïðèâåäåííÿ äî ä³àïàçîíó [-1; 1]
+		inorm = (float)i / (n-1) * 2.f - 1.f; //Ã¯Ã°Ã¨Ã¢Ã¥Ã¤Ã¥Ã­Ã­Ã¿ Ã¤Ã® Ã¤Â³Ã Ã¯Ã Ã§Ã®Ã­Ã³ [-1; 1]
 		value = -pow(inorm, power)+1.f;
 		if (value >= 0.f) blurVector[i] = value;
 		else blurVector[i] = 0.f;
@@ -33,7 +33,7 @@ void genenate_blur_vector_parabola(float* blurVector, int n, float power) {
 void genenate_gaussian_blur_vector(float* blurVector, int n) {
 	int i; float value, inorm;
 	for (i = 0; i < n; i++) {
-		inorm = (float)i / (n-1) * 4.f - 2.f; //ïðèâåäåííÿ äî ä³àïàçîíó [-2; 2]
+		inorm = (float)i / (n-1) * 4.f - 2.f; //Ã¯Ã°Ã¨Ã¢Ã¥Ã¤Ã¥Ã­Ã­Ã¿ Ã¤Ã® Ã¤Â³Ã Ã¯Ã Ã§Ã®Ã­Ã³ [-2; 2]
 		value = exp(-(inorm*inorm)); //exp(-x^2);
 		blurVector[i] = value;
 	}
