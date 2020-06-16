@@ -9,18 +9,20 @@ The program was writen with C++ using GLEW and GLFW. To use it, you need a video
 So far you can choose on of thise options to change your photo:
 - Saturation
 - Gamma correction
-- Change brightness
-- Change contrast
-- Tritanotopia
+- Brightness
+- Contrast
+- Temperature (white balance)
+- Hue
+- Chromatic abberation (dispersion)
+- and other
+- Sharpness
+- diffenrent blur
 ## Technical features
 To make some changes to the photo, we are using shader, all of tham can be found in $/res/ dir.
 
-To choose another photo you need to rewrite path in src_main.cpp(will be changed asasp).
+Application workds with jpg, png, bmp image formats, supports saving to file.  
 
-#
-### This programm is still in development and more options will be added soon
-
-## Screenshots command line mode
+## Screenshots
 ![](screenshots_new/screenshot2_1.PNG)
 ![](screenshots_new/screenshot2_2.PNG)
 ![](screenshots_new/screenshot2_3.PNG)
