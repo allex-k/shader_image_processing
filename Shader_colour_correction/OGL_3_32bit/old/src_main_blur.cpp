@@ -55,7 +55,7 @@ int main()
 	unsigned char* image = SOIL_load_image(pathToImage, &width, &height, 0, SOIL_LOAD_RGB);
 
 	float posX = 1.f, posY = 1.f;
-	float aspectRatio = ((float)WIDTH / HEIGHT) / ((float)width / height); //співвідношення співвідношень сторін вікна та зображення
+	float aspectRatio = ((float)WIDTH / HEIGHT) / ((float)width / height); //Г±ГЇВіГўГўВіГ¤Г­Г®ГёГҐГ­Г­Гї Г±ГЇВіГўГўВіГ¤Г­Г®ГёГҐГ­Гј Г±ГІГ®Г°ВіГ­ ГўВіГЄГ­Г  ГІГ  Г§Г®ГЎГ°Г Г¦ГҐГ­Г­Гї
 
 	if (aspectRatio < 1.f) { posY = aspectRatio; }
 	else { posX = 1.f / aspectRatio; };
