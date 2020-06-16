@@ -22,7 +22,7 @@ To choose another photo you need to rewrite path in src_main.cpp(will be changed
 
 ## Screenshots command line mode
 ![](screenshots_new/screenshot2_1.PNG)
-![](screenshots/screenshot2.PNG)
-![](screenshots/screenshot3.PNG)
-![](screenshots/screenshot4.PNG)
-![](screenshots/screenshot5.PNG)
+![](screenshots_new/screenshot2_2.PNG)
+![](screenshots_new/screenshot2_3.PNG)
+![](screenshots_new/screenshot2_4.PNG)
+![](screenshots_new/screenshot2_5.PNG)
