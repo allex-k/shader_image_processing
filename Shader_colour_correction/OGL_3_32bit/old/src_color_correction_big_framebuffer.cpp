@@ -1,8 +1,8 @@
-//цветокоррекция
-//розмір framebuffer = розмір зображення
-//корекція накоплюється - на наступній ітерації 
-//використовується оброблене зображення
-//з попередньої ітерації
+//Г¶ГўГҐГІГ®ГЄГ®Г°Г°ГҐГЄГ¶ГЁГї
+//Г°Г®Г§Г¬ВіГ° framebuffer = Г°Г®Г§Г¬ВіГ° Г§Г®ГЎГ°Г Г¦ГҐГ­Г­Гї
+//ГЄГ®Г°ГҐГЄГ¶ВіГї Г­Г ГЄГ®ГЇГ«ГѕВєГІГјГ±Гї - Г­Г  Г­Г Г±ГІГіГЇГ­ВіГ© ВіГІГҐГ°Г Г¶ВіВї 
+//ГўГЁГЄГ®Г°ГЁГ±ГІГ®ГўГіВєГІГјГ±Гї Г®ГЎГ°Г®ГЎГ«ГҐГ­ГҐ Г§Г®ГЎГ°Г Г¦ГҐГ­Г­Гї
+//Г§ ГЇГ®ГЇГҐГ°ГҐГ¤Г­ГјГ®Вї ВіГІГҐГ°Г Г¶ВіВї
 #include <iostream>
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -67,14 +67,14 @@ int main()
 	//char* imagePixelsArr = new char[width*height*3];
 
 	float posX = 1.f, posY = 1.f;
-	float aspectRatio = ((float)SCR_WIDTH / SCR_HEIGHT) / ((float)width / height); //співвідношення співвідношень сторін вікна та зображення
+	float aspectRatio = ((float)SCR_WIDTH / SCR_HEIGHT) / ((float)width / height); //Г±ГЇВіГўГўВіГ¤Г­Г®ГёГҐГ­Г­Гї Г±ГЇВіГўГўВіГ¤Г­Г®ГёГҐГ­Гј Г±ГІГ®Г°ВіГ­ ГўВіГЄГ­Г  ГІГ  Г§Г®ГЎГ°Г Г¦ГҐГ­Г­Гї
 
 	if (aspectRatio < 1.f) { posY = aspectRatio; }
 	else { posX = 1.f / aspectRatio; };
 
 	float scaleX = (float)SCR_WIDTH / width;
 	float scaleY = (float)SCR_HEIGHT / height;
-	// vertices2 для відображення на екран (поворот + масштаб)
+	// vertices2 Г¤Г«Гї ГўВіГ¤Г®ГЎГ°Г Г¦ГҐГ­Г­Гї Г­Г  ГҐГЄГ°Г Г­ (ГЇГ®ГўГ®Г°Г®ГІ + Г¬Г Г±ГёГІГ ГЎ)
 	GLfloat vertices2[] = {
 		// Positions            // Texture Coords
 		 -posX, -posY, 		0.f, 1.f,
@@ -82,7 +82,7 @@ int main()
 		posX, posY,  		1.f, 0.f,
 		-posX,  posY, 		0.f, 0.f
 	};
-	//для обробки зображеня  без повороту, без масштабування (1 - з текстури в єкранний буфер)
+	//Г¤Г«Гї Г®ГЎГ°Г®ГЎГЄГЁ Г§Г®ГЎГ°Г Г¦ГҐГ­Гї  ГЎГҐГ§ ГЇГ®ГўГ®Г°Г®ГІГі, ГЎГҐГ§ Г¬Г Г±ГёГІГ ГЎГіГўГ Г­Г­Гї (1 - Г§ ГІГҐГЄГ±ГІГіГ°ГЁ Гў ВєГЄГ°Г Г­Г­ГЁГ© ГЎГіГґГҐГ°)
 	//float scale=1.0;
 	GLfloat vertices[] = {
 		// Positions            // Texture Coords
@@ -156,7 +156,7 @@ int main()
 6: color separation)";
 	std::cout << description << "\n";
 
-	//з текстури frameBuffer1
+	//Г§ ГІГҐГЄГ±ГІГіГ°ГЁ frameBuffer1
 	glViewport(0, 0, width, height); 
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer1);
 	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
@@ -173,12 +173,12 @@ int main()
 	while (!glfwWindowShouldClose(window))
 	{
 
-		glViewport(0, 0, width, height); //!!! зміна разміру Viewport
-		//адже розмір frameFuffer1 відрізняється від розміру вікна (стандартного кадрового буфера)
-		//frameFuffer1,2- розмір зображення, станлартний - розмір вікна
+		glViewport(0, 0, width, height); //!!! Г§Г¬ВіГ­Г  Г°Г Г§Г¬ВіГ°Гі Viewport
+		//Г Г¤Г¦ГҐ Г°Г®Г§Г¬ВіГ° frameFuffer1 ГўВіГ¤Г°ВіГ§Г­ГїВєГІГјГ±Гї ГўВіГ¤ Г°Г®Г§Г¬ВіГ°Гі ГўВіГЄГ­Г  (Г±ГІГ Г­Г¤Г Г°ГІГ­Г®ГЈГ® ГЄГ Г¤Г°Г®ГўГ®ГЈГ® ГЎГіГґГҐГ°Г )
+		//frameFuffer1,2- Г°Г®Г§Г¬ВіГ° Г§Г®ГЎГ°Г Г¦ГҐГ­Г­Гї, Г±ГІГ Г­Г«Г Г°ГІГ­ГЁГ© - Г°Г®Г§Г¬ВіГ° ГўВіГЄГ­Г 
 		// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
 
-		// З FrameFuffer1 у FrameFuffer2
+		// Г‡ FrameFuffer1 Гі FrameFuffer2
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer2);
 
 		glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
@@ -195,11 +195,11 @@ int main()
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
-		//----------------------у файл-------------------------------
+		//----------------------Гі ГґГ Г©Г«-------------------------------
 		//glReadPixels(0, 0, width, height, GL_BGR_EXT, GL_UNSIGNED_BYTE, imagePixelsArr);
 		//bmpFile.save_to_file(imagePixelsArr);
 
-		//з frameFuffer2  на екран
+		//Г§ frameFuffer2  Г­Г  ГҐГЄГ°Г Г­
 		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		//glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
@@ -240,7 +240,7 @@ int main()
 	return 0;
 }
 
-//вспомогательные функции
+//ГўГ±ГЇГ®Г¬Г®ГЈГ ГІГҐГ«ГјГ­Г»ГҐ ГґГіГ­ГЄГ¶ГЁГЁ
 void generate_frame_buffer_and_texture(GLint width, GLint height, GLuint* frameBuffer, GLuint* frameBuffTexture) {
 	glGenFramebuffers(1, frameBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, *frameBuffer);
