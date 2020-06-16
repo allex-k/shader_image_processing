@@ -16,52 +16,32 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="generate_blur_matrix.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image_write.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageProcessing.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleEngine.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="other_functions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BMPfile.h">
+    <ClInclude Include="generate_blur_matrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\res\blur2.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\res\blur1.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\res\empty.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\res\empty.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\res\color_correction.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src_main.cpp">
+    <ClCompile Include="src_main_color_correction_big_framebuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src_main_blur.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src_blur_2_frame_buffers.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src_blur_2_big_frame_buffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="other_functions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src_color_correction_big_framebuffer.cpp">
+    <ClCompile Include="mainWindowEventProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
