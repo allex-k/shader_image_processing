@@ -1,8 +1,8 @@
-//цветокоррекция
-//розмір framebuffer = розмір зображення
-//корекція накоплюється - на наступній ітерації 
-//використовується оброблене зображення
-//з попередньої ітерації
+//Г¶ГўГҐГІГ®ГЄГ®Г°Г°ГҐГЄГ¶ГЁГї
+//Г°Г®Г§Г¬ВіГ° framebuffer = Г°Г®Г§Г¬ВіГ° Г§Г®ГЎГ°Г Г¦ГҐГ­Г­Гї
+//ГЄГ®Г°ГҐГЄГ¶ВіГї Г­Г ГЄГ®ГЇГ«ГѕВєГІГјГ±Гї - Г­Г  Г­Г Г±ГІГіГЇГ­ВіГ© ВіГІГҐГ°Г Г¶ВіВї 
+//ГўГЁГЄГ®Г°ГЁГ±ГІГ®ГўГіВєГІГјГ±Гї Г®ГЎГ°Г®ГЎГ«ГҐГ­ГҐ Г§Г®ГЎГ°Г Г¦ГҐГ­Г­Гї
+//Г§ ГЇГ®ГЇГҐГ°ГҐГ¤Г­ГјГ®Вї ВіГІГҐГ°Г Г¶ВіВї
 //#define ENTER_PATH_TO_IMAGE
 //#define ENTER_PATH_TO_RESULT
 
@@ -80,14 +80,14 @@ int main()
 	uint8_t* imagePixelsArr = new uint8_t[imageWidth*imageHeight*nrComponents];
 
 	float posX = 1.f, posY = 1.f;
-	float aspectRatio = ((float)WINDOW_WIDTH / WINDOW_HEIGHT) / ((float)imageWidth / imageHeight); //співвідношення співвідношень сторін вікна та зображення
+	float aspectRatio = ((float)WINDOW_WIDTH / WINDOW_HEIGHT) / ((float)imageWidth / imageHeight); //Г±ГЇВіГўГўВіГ¤Г­Г®ГёГҐГ­Г­Гї Г±ГЇВіГўГўВіГ¤Г­Г®ГёГҐГ­Гј Г±ГІГ®Г°ВіГ­ ГўВіГЄГ­Г  ГІГ  Г§Г®ГЎГ°Г Г¦ГҐГ­Г­Гї
 
 	if (aspectRatio < 1.f) { posY = aspectRatio; }
 	else { posX = 1.f / aspectRatio; };
 
 	float scaleX = (float)WINDOW_WIDTH / imageWidth;
 	float scaleY = (float)WINDOW_HEIGHT / imageHeight;
-	// vertices2 для відображення на екран (поворот + масштаб)
+	// vertices2 Г¤Г«Гї ГўВіГ¤Г®ГЎГ°Г Г¦ГҐГ­Г­Гї Г­Г  ГҐГЄГ°Г Г­ (ГЇГ®ГўГ®Г°Г®ГІ + Г¬Г Г±ГёГІГ ГЎ)
 	GLfloat vertices2[] = {
 		// Positions            // Texture Coords
 		 -posX, -posY, 		0.f, 1.f,
@@ -95,7 +95,7 @@ int main()
 		posX, posY,  		1.f, 0.f,
 		-posX,  posY, 		0.f, 0.f
 	};
-	//для обробки зображеня  без повороту, без масштабування (1 - з текстури в єкранний буфер)
+	//Г¤Г«Гї Г®ГЎГ°Г®ГЎГЄГЁ Г§Г®ГЎГ°Г Г¦ГҐГ­Гї  ГЎГҐГ§ ГЇГ®ГўГ®Г°Г®ГІГі, ГЎГҐГ§ Г¬Г Г±ГёГІГ ГЎГіГўГ Г­Г­Гї (1 - Г§ ГІГҐГЄГ±ГІГіГ°ГЁ Гў ВєГЄГ°Г Г­Г­ГЁГ© ГЎГіГґГҐГ°)
 	//float scale=1.0;
 	GLfloat vertices[] = {
 		// Positions            // Texture Coords
@@ -171,9 +171,9 @@ int main()
 88: undo)";
 	std::cout << description << "\n";
 
-	//Рендер початкового зображення з текстури у frameBuffer1 
-	glViewport(0, 0, imageWidth, imageHeight);//!!! зміна разміру Viewport
-	//адже розмір frameFuffer1,2 відрізняється від розміру вікна (стандартного кадрового буфера)
+	//ГђГҐГ­Г¤ГҐГ° ГЇГ®Г·Г ГІГЄГ®ГўГ®ГЈГ® Г§Г®ГЎГ°Г Г¦ГҐГ­Г­Гї Г§ ГІГҐГЄГ±ГІГіГ°ГЁ Гі frameBuffer1 
+	glViewport(0, 0, imageWidth, imageHeight);//!!! Г§Г¬ВіГ­Г  Г°Г Г§Г¬ВіГ°Гі Viewport
+	//Г Г¤Г¦ГҐ Г°Г®Г§Г¬ВіГ° frameFuffer1,2 ГўВіГ¤Г°ВіГ§Г­ГїВєГІГјГ±Гї ГўВіГ¤ Г°Г®Г§Г¬ВіГ°Гі ГўВіГЄГ­Г  (Г±ГІГ Г­Г¤Г Г°ГІГ­Г®ГЈГ® ГЄГ Г¤Г°Г®ГўГ®ГЈГ® ГЎГіГґГҐГ°Г )
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer1);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -185,7 +185,7 @@ int main()
 
 	while (!glfwWindowShouldClose(window))
 	{
-		//############################# з frameFuffer1 у frameFuffer2 ##################################
+		//############################# Г§ frameFuffer1 Гі frameFuffer2 ##################################
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer2);
 
 		imageProcessShader.Use();
@@ -195,7 +195,7 @@ int main()
 		glBindVertexArray(VAO1);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-		//############################# з frameFuffer2  на екран #######################################
+		//############################# Г§ frameFuffer2  Г­Г  ГҐГЄГ°Г Г­ #######################################
 		glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -209,16 +209,16 @@ int main()
 
 		glfwSwapBuffers(window);
 		
-		//################################## з frameFuffer2 у файл ####################################################
+		//################################## Г§ frameFuffer2 Гі ГґГ Г©Г« ####################################################
 		glViewport(0, 0, imageWidth, imageHeight); 
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer2);
 		glReadPixels(0, 0, imageWidth, imageHeight, nComponentsToGLConst[nrComponents], GL_UNSIGNED_BYTE, imagePixelsArr);
 		save_image_to_file(destImagePath.c_str(), imageWidth, imageHeight, nrComponents, imagePixelsArr);
 		std::cout << "Enter id: ";
-		if (std::cin.fail()) // если предыдущее извлечение оказалось неудачным,
+		if (std::cin.fail()) // ГҐГ±Г«ГЁ ГЇГ°ГҐГ¤Г»Г¤ГіГ№ГҐГҐ ГЁГ§ГўГ«ГҐГ·ГҐГ­ГЁГҐ Г®ГЄГ Г§Г Г«Г®Г±Гј Г­ГҐГіГ¤Г Г·Г­Г»Г¬,
 		{
-			std::cin.clear(); // то возвращаем cin в 'обычный' режим работы
-			std::cin.ignore(32767, '\n'); // и удаляем значения предыдущего ввода из входного буфера
+			std::cin.clear(); // ГІГ® ГўГ®Г§ГўГ°Г Г№Г ГҐГ¬ cin Гў 'Г®ГЎГ»Г·Г­Г»Г©' Г°ГҐГ¦ГЁГ¬ Г°Г ГЎГ®ГІГ»
+			std::cin.ignore(32767, '\n'); // ГЁ ГіГ¤Г Г«ГїГҐГ¬ Г§Г­Г Г·ГҐГ­ГЁГї ГЇГ°ГҐГ¤Г»Г¤ГіГ№ГҐГЈГ® ГўГўГ®Г¤Г  ГЁГ§ ГўГµГ®Г¤Г­Г®ГЈГ® ГЎГіГґГҐГ°Г 
 		}
 		std::cin >> id;
 		if (id == 88)
@@ -249,7 +249,7 @@ int main()
 	return 0;
 }
 
-//допоміжні функції
+//Г¤Г®ГЇГ®Г¬ВіГ¦Г­Ві ГґГіГ­ГЄГ¶ВіВї
 void generate_frame_buffer_and_texture(GLint imageWidth, GLint imageHeight, GLuint* frameBuffer, GLuint* frameBuffTexture) {
 	glGenFramebuffers(1, frameBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, *frameBuffer);
