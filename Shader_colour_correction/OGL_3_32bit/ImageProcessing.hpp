@@ -25,7 +25,8 @@ public:
 		blur2StepsShader(resPath + "empty.vs", resPath + "blur_2_steps.fs"),
 		convolution3x3Shader(resPath + "empty.vs", resPath + "convolution3x3.fs"),
 		convolution_n_mShader(resPath + "empty.vs", resPath + "convolution_n_m.fs"),
-		convolution_n_m_textureShader(resPath + "empty.vs", resPath+"convolution_n_m_kern_texture.fs")
+		convolution_n_m_textureShader(resPath + "empty.vs", resPath+"convolution_n_m_kern_texture.fs"),
+		mixTexturesShader(resPath + "empty.vs", resPath + "mix_textures.fs")
 	{
 		imageTextureID = load_texture(srcImagePath, &imageWidth, &imageHeight, &nrComponents);
 		glViewport(0, 0, imageWidth, imageHeight);
@@ -67,7 +68,7 @@ public:
 	void blur_2_steps(GLint id, GLfloat value, GLfloat blurScale = 1.f, GLfloat gamma = 2.2) {
 		const int MAX_SIZE = 512;
 		float coeffVector[MAX_SIZE];
-		GLint SIZE = clip(scale(value, -1, 1, 2, 200), 2, 512);
+		GLint SIZE = clip(scale(value, -1, 1, 2, 50), 2, 512);
 		
 		switch (id)
 		{
@@ -104,7 +105,7 @@ public:
 
 	void sharpness(GLint id, GLfloat value, float gamma = 2.2) {
 		float coeffVector[9];
-		generate_sharpness_matrix(coeffVector, scale(value, -1, 1, -9, 11));
+		generate_sharpness_matrix(coeffVector, scale(value, -1, 1, -4, 6));
 	
 		glViewport(0, 0, imageWidth, imageHeight);
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer2);
@@ -152,10 +153,9 @@ public:
 		if(id== 15)generate_regular_polygon_matrix(kernel, n, n, nVertices);
 		if(id == 16)generate_heart_matrix(kernel, n, n);
 		//====================== створення текстури ==============================	
-		unsigned int kernelTextureID;
-			glGenTextures(1, &kernelTextureID);
+		GLuint  kernelTextureID;
+		glGenTextures(1, &kernelTextureID);
 
-		
 				glBindTexture(GL_TEXTURE_2D, kernelTextureID);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, n, n, 0, GL_RED, GL_FLOAT, kernel);
 				glGenerateMipmap(GL_TEXTURE_2D);
@@ -187,8 +187,37 @@ public:
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		
 		delete[] kernel;
+		glDeleteTextures(1, &kernelTextureID);
 		glActiveTexture(GL_TEXTURE0);
 	}
+
+	void bloom(GLint id, GLfloat value, GLfloat blurScale = 1.f, GLfloat gamma = 2.2) {
+		blur_2_steps(10, value, blurScale, gamma);
+
+		/*increase saturation for blurred texture
+		GLuint temp = frameBuffTexture1;
+		frameBuffTexture1 = frameBuffTexture2;
+		color_correction(0, 0.9);
+		frameBuffTexture1 = temp;*/
+
+		glViewport(0, 0, imageWidth, imageHeight);
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer2);
+		mixTexturesShader.Use();
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, frameBuffTexture1);
+		glUniform1i(glGetUniformLocation(mixTexturesShader.Program, "texture1"), 0);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, frameBuffTexture2);
+		glUniform1i(glGetUniformLocation(mixTexturesShader.Program, "texture2"), 1);
+
+		glUniform1f(glGetUniformLocation(mixTexturesShader.Program, "coeff"), 0.5f);
+
+		glBindVertexArray(VAO1);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glActiveTexture(GL_TEXTURE0);
+	}
+
 	void draw_blur_texture(GLint id, GLfloat value, int nVertices = 5, GLfloat blurScale = 1.f, GLfloat gamma = 4.0) {
 		int n = scale(value, -1, 1, 2, 50);
 		int n2 = n * n;
@@ -227,10 +256,8 @@ public:
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		delete[] kernel1; delete[] kernel2;
-
-
-
 	}
+	
 	void show() {
 		//############################# з frameFuffer2  на екран #######################################
 		glViewport(0, 0, windowWidth, windowHeight);
@@ -267,6 +294,8 @@ private:
 	std::string resPath = "res\\";
 	std::string srcImagePath, destImagePath;
 	Shader emptyShader, colorCorrectionShader, blur2StepsShader, convolution3x3Shader, convolution_n_mShader, convolution_n_m_textureShader;
+	Shader mixTexturesShader;
+
 	int imageWidth, imageHeight, nrComponents;
 	GLuint imageTextureID;
 	GLenum nComponentsToGLConst[5] = { 0, GL_RED , GL_RG, GL_RGB, GL_RGBA };

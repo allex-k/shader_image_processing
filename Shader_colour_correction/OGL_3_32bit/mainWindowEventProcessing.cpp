@@ -17,7 +17,7 @@ GLfloat value = 0.f;
 int nVertices = 5;
 GLfloat blurScale = 1.f;
 
-const int NUM_EFFECTS = 18;
+const int NUM_EFFECTS = 19;
 
 ImageProcessing* imageProcessing;
 ConsoleEngine* consoleEngine;
@@ -60,7 +60,7 @@ int main() {
 	imageProcessing->show();
 
 	
-	//Sleep(3000); //щоб побачити повідомлення про помилки
+	Sleep(3000); //щоб побачити повідомлення про помилки
 	consoleEngine = new ConsoleEngine;
 	consoleEngine->ConstructConsole(60, NUM_EFFECTS*2, 8, 16);
 	std::wstring description[NUM_EFFECTS] = {
@@ -68,7 +68,7 @@ int main() {
 		L"gamma correction",   //1
 		L"brightness",   //2
 		L"contrast",  //3
-		L"temperature",  //4
+		L"white balance (temperature)",  //4
 		L"hue",  //5
 		L"chromatic abberation (dispersion)",  //6
 		L"color_only", // 7
@@ -80,8 +80,9 @@ int main() {
 		L"sharpness", //13
 		L"blur regular polygon" ,//14
 		L"blur regular polygon texture", //15
-		L"heart blur",
-		L"test" //16
+		L"heart blur", //16
+		L"test",//17
+		L"bloom", //18
 	};
 	consoleEngine->add_description(description, 0, NUM_EFFECTS);
 	consoleEngine->update(id, value);
@@ -142,6 +143,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		if(id == 14) imageProcessing->regular_polygon_blur(id, value, nVertices, blurScale);
 		if (id == 15 || id == 16) imageProcessing->blur_texture_kernel(id, value, nVertices, blurScale);
 		if (id == 17) imageProcessing->draw_blur_texture(id, value, nVertices, blurScale);
+		if (id == 18) imageProcessing->bloom(id, value, blurScale);
 
 		imageProcessing->show();
 	}
