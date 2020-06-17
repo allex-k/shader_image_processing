@@ -28,3 +28,5 @@ Application workds with jpg, png, bmp image formats, supports saving to file.
 ![](screenshots_new/screenshot2_3.PNG)
 ![](screenshots_new/screenshot2_4.PNG)
 ![](screenshots_new/screenshot2_5.PNG)
+![](screenshots_new/screenshot2_6.PNG)
+![](screenshots_new/screenshot2_7.PNG)
