@@ -1,6 +1,7 @@
 #pragma once
 #define _USE_MATH_DEFINES
 #include "math.h"
+#include "other_functions.h"
 float sum_of_array(float* arr, int n);
 void normalize_array(float *arr, int n);
 
@@ -105,7 +106,7 @@ void fill_convex_polygon(Matrix *mtrx) {
 	}
 }
 
-void draw_line(Matrix* mtrx, float x1, float y1, float x2, float y2, float val) {
+void draw_line(Matrix* mtrx, float x1, float y1, float x2, float y2, float val=1) {
 	float x = x2 - x1, y = y2 - y1;
 	float len = sqrtf(x*x + y * y);
 	x /= len; y /= len;  //нормалізація вектора
@@ -139,6 +140,33 @@ void draw_regular_polygon(Matrix* mtrx, int nVertices, float val = 1) {
 		posY = posYnew;
 	}
 }
+void draw_heart(Matrix* mtrx, float val = 1) {
+	//const int n = mtrx->ncols*4;
+	const int n = 100;
+	float* t = new float[n];
+	linspace(t, 0.f, 2.f*M_PI, n);
+	int i, ncols=mtrx->ncols, nrows=mtrx->nrows;
+	float x, y, xnew, ynew;
+
+	x = 16.f*powf(sin(t[0]), 3.f);
+	x = scale(x, -16, 16, 0, ncols - 1);
+
+	y = 13.f * cos(t[0]) - 5.f * cos(2.f * t[0]) - 2.f * cos(3.f * t[0]) - cos(4.f * t[0]);
+	y = scale(y, -17, 12, 0, nrows - 1);
+
+	for (i = 1; i < n; ++i) {
+		xnew = 16.f*powf(sin(t[i]), 3.f);
+		xnew = scale(xnew, -16, 16, 0, ncols - 1);
+
+		ynew = 13.f * cos(t[i]) - 5.f * cos(2.f * t[i]) - 2.f * cos(3.f * t[i]) - cos(4.f * t[i]);
+		ynew = scale(ynew, -17, 12, 0, nrows - 1);
+
+		draw_line(mtrx, x, y, xnew, ynew);
+
+		x = xnew; y = ynew;
+	}
+}
+
 
 void generate_regular_polygon_matrix(float* values, int nrows, int ncols, int nVertices) {
 	Matrix mtrx(values, nrows, ncols);
@@ -147,6 +175,22 @@ void generate_regular_polygon_matrix(float* values, int nrows, int ncols, int nV
 	normalize_array(values, nrows*ncols);
 }
 
+void generate_heart_matrix(float* kernel1, int nrows, int ncols) {
+	int n2 = nrows * ncols;
+	float* kernel2 = new float[n2]();
+	
+	Matrix mtrx1(kernel1, nrows, ncols);
+	Matrix mtrx2(kernel2, nrows, ncols);
 
+	draw_heart(&mtrx1);
+
+	transpose_matrix(kernel2, kernel1, nrows, ncols);
+	fill_convex_polygon(&mtrx2);
+	transpose_matrix(kernel1, kernel2, nrows, ncols);
+	normalize_array(kernel1, n2);
+
+	delete[] kernel2;
+
+}
 
 

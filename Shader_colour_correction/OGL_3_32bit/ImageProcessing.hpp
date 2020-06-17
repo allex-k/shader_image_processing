@@ -144,18 +144,13 @@ public:
 		delete[] kernel;
 	}
 
-	void regular_polygon_blur_texture(GLint id, GLfloat value, int nVertices=5, GLfloat blurScale=1.f, GLfloat gamma = 4.0) {
+	void blur_texture_kernel(GLint id, GLfloat value, int nVertices=5, GLfloat blurScale=1.f, GLfloat gamma = 4.0) {
 		int n = scale(value, -1, 1, 2, 50);
 		int n2 = n * n;
-		//std::cout << "n=" << n << "  n2=" << n2 << std::endl;
 		float* kernel = new float[n2]();
 
-		generate_regular_polygon_matrix(kernel, n, n, nVertices);
-		//Matrix mtrx(kernel, n, n);
-		//draw_regular_polygon(&mtrx, 5);
-		//fill_convex_polygon(&mtrx);
-		//normalize_array(kernel, n2);
-		
+		if(id== 15)generate_regular_polygon_matrix(kernel, n, n, nVertices);
+		if(id == 16)generate_heart_matrix(kernel, n, n);
 		//====================== створення текстури ==============================	
 		unsigned int kernelTextureID;
 			glGenTextures(1, &kernelTextureID);
@@ -194,7 +189,48 @@ public:
 		delete[] kernel;
 		glActiveTexture(GL_TEXTURE0);
 	}
+	void draw_blur_texture(GLint id, GLfloat value, int nVertices = 5, GLfloat blurScale = 1.f, GLfloat gamma = 4.0) {
+		int n = scale(value, -1, 1, 2, 50);
+		int n2 = n * n;
+		float* kernel1 = new float[n2]();
+		float* kernel2 = new float[n2]();
+		Matrix mtrx1(kernel1, n, n);
+		Matrix mtrx2(kernel2, n, n);
+		draw_heart(&mtrx1);
 
+		transpose_matrix(kernel2, kernel1, n, n);
+		fill_convex_polygon(&mtrx2);
+		transpose_matrix(kernel1, kernel2, n, n);
+
+		//normalize_array(kernel, n2);
+
+		//====================== створення текстури ==============================	
+		unsigned int kernelTextureID;
+		glGenTextures(1, &kernelTextureID);
+
+
+		glBindTexture(GL_TEXTURE_2D, kernelTextureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, n, n, 0, GL_RED, GL_FLOAT, kernel1);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		//========================================================================
+		glViewport(0, 0, imageWidth, imageHeight);
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer2);
+
+		emptyShader.Use();
+		glBindTexture(GL_TEXTURE_2D, kernelTextureID);
+		glBindVertexArray(VAO1);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		delete[] kernel1; delete[] kernel2;
+
+
+
+	}
 	void show() {
 		//############################# з frameFuffer2  на екран #######################################
 		glViewport(0, 0, windowWidth, windowHeight);

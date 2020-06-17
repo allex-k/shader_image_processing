@@ -33,10 +33,25 @@ void print_array(float* arr, int n) {
 	print_array(arr, 1, n);
 }
 
-
 void print_array(unsigned char* arr, int n)
 {
 	for (int i = 0; i < n; ++i)
 		std::cout << (int)arr[i] << "  ";
 }
 
+void linspace(float* arr, float start, float end, uint32_t n) {
+	float current = start;
+	float step = (end - start) / ((float)n - 1);
+	for (uint32_t i = 0; i < n; ++i) {
+		arr[i] = current; current += step;
+
+	}
+}
+
+void transpose_matrix(float* dest, float* src, int nrows, int ncols) {
+	//nrows, ncols for source marix
+	int i, j;
+	for (i = 0; i < nrows; ++i)
+		for (j = 0; j < ncols; ++j)
+			dest[j*nrows + i] = src[i*ncols + j];
+}
