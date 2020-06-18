@@ -32,7 +32,7 @@ public:
 		glViewport(0, 0, imageWidth, imageHeight);
 		imagePixelsArr = new uint8_t[imageWidth*imageHeight*nrComponents];
 
-		create_VAO_VBO_EBO_1_2();
+		create_VAO_VBO_EBO_1(); create_VAO_VBO_EBO_2();
 
 		create_frame_buffer_and_texture(imageWidth, imageHeight, &frameBuffer1, &frameBuffTexture1);
 		create_frame_buffer_and_texture(imageWidth, imageHeight, &frameBuffer2, &frameBuffTexture2);
@@ -178,7 +178,6 @@ public:
 		glBindTexture(GL_TEXTURE_2D, kernelTextureID);
 		glUniform1i(glGetUniformLocation(convolution_n_m_textureShader.Program, "kernelTexture"), 1);
 
-
 		glUniform2f(glGetUniformLocation(convolution_n_m_textureShader.Program, "offsetImage"), 1.f/imageWidth* blurScale, 1.f/imageHeight* blurScale);
 		glUniform2f(glGetUniformLocation(convolution_n_m_textureShader.Program, "offsetKernel"), 1.f/n, 1.f/n);
 		glUniform1f(glGetUniformLocation(convolution_n_m_textureShader.Program, "gamma"), gamma);
@@ -237,7 +236,6 @@ public:
 		unsigned int kernelTextureID;
 		glGenTextures(1, &kernelTextureID);
 
-
 		glBindTexture(GL_TEXTURE_2D, kernelTextureID);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, n, n, 0, GL_RED, GL_FLOAT, kernel1);
 		glGenerateMipmap(GL_TEXTURE_2D);
@@ -262,6 +260,8 @@ public:
 		//############################# з frameFuffer2  на екран #######################################
 		glViewport(0, 0, windowWidth, windowHeight);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
 
 		emptyShader.Use();
 		glBindTexture(GL_TEXTURE_2D, frameBuffTexture2);
@@ -276,12 +276,22 @@ public:
 	void apply_changes() {
 		swap_buffers();
 	}
+	
+	void resize(int newWidth, int newHeight) {
+		windowWidth = newWidth; windowHeight = newHeight;
+		glDeleteVertexArrays(1, &VAO2);
+		glDeleteBuffers(1, &VBO2);
+		glDeleteBuffers(1, &EBO2);
+		create_VAO_VBO_EBO_2();
+
+	}
 	void save_to_file() {
 		//################################## з frameFuffer2 у файл ####################################################
 		glViewport(0, 0, imageWidth, imageHeight);
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer2);
 		glReadPixels(0, 0, imageWidth, imageHeight, nComponentsToGLConst[nrComponents], GL_UNSIGNED_BYTE, imagePixelsArr);
 		save_image_to_file(destImagePath.c_str(), imageWidth, imageHeight, nrComponents, imagePixelsArr);
+	
 	}
 	void print() {
 		std::cout << "windowWidth = " << windowWidth << std::endl << "windowHeight = " << windowHeight << std::endl;
@@ -289,7 +299,7 @@ public:
 	}
 
 private:
-	const int windowWidth, windowHeight;
+	int windowWidth, windowHeight;
 	GLFWwindow* window;
 	std::string resPath = "res\\";
 	std::string srcImagePath, destImagePath;
@@ -300,7 +310,7 @@ private:
 	GLuint imageTextureID;
 	GLenum nComponentsToGLConst[5] = { 0, GL_RED , GL_RG, GL_RGB, GL_RGBA };
 	uint8_t* imagePixelsArr;
-	GLuint VAO1, VAO2;
+	GLuint VAO1, VBO1, EBO1, VAO2, VBO2, EBO2;
 	GLuint frameBuffer1, frameBuffer2, frameBuffer3, frameBuffTexture1, frameBuffTexture2, frameBuffTexture3;
 	float ranges[10][2] = { {0,2}, {2,0} ,{0.5, 1.5}, {3,0}, {-0.25,0.25}, {-0.1,0.1}, {-0.01, 0.01}, {0,0}, {0,0}, {0,0} };
 	//Shader colorCorrectionShader;
@@ -362,25 +372,8 @@ private:
 		frameBuffTexture1 = frameBuffTexture2;
 		frameBuffTexture2 = temp;
 	}
-	void create_VAO_VBO_EBO_1_2() {
-		float posX = 1.f, posY = 1.f;
-		float aspectRatio = ((float)windowWidth / windowHeight) / ((float)imageWidth / imageHeight); //співвідношення співвідношень сторін вікна та зображення
-
-		if (aspectRatio < 1.f) { posY = aspectRatio; }
-		else { posX = 1.f / aspectRatio; };
-
-		float scaleX = (float)windowWidth / imageWidth;
-		float scaleY = (float)windowHeight / imageHeight;
-		// vertices2 для відображення на екран (поворот + масштаб)
-		GLfloat vertices2[] = {
-			// Positions            // Texture Coords
-			 -posX, -posY, 		0.f, 1.f,
-			 posX, -posY, 		1.0f, 1.f,
-			posX, posY,  		1.f, 0.f,
-			-posX,  posY, 		0.f, 0.f
-		};
+	void create_VAO_VBO_EBO_1() {
 		//для обробки зображеня  без повороту, без масштабування (1 - з текстури в єкранний буфер)
-		//float scale=1.0;
 		GLfloat vertices[] = {
 			// Positions            // Texture Coords
 			 -1, -1, 		0.f, 0.f,
@@ -394,7 +387,7 @@ private:
 			1, 2, 3  // Second Triangle
 		};
 
-		GLuint VBO1, EBO1;
+		//GLuint VBO1, EBO1;
 		glGenVertexArrays(1, &VAO1);
 		glGenBuffers(1, &VBO1);
 		glGenBuffers(1, &EBO1);
@@ -412,19 +405,40 @@ private:
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
 		glBindVertexArray(0);
+	}
 
 		//-------------------------------------------------------------------------
-		GLuint VBO2;
+	void create_VAO_VBO_EBO_2() {
+		float posX = 1.f, posY = 1.f;
+		float aspectRatio = ((float)windowWidth / windowHeight) / ((float)imageWidth / imageHeight); //співвідношення співвідношень сторін вікна та зображення
+
+		if (aspectRatio < 1.f) { posY = aspectRatio; }
+		else { posX = 1.f / aspectRatio; };
+
+		// vertices2 для відображення на екран (поворот + масштаб)
+		GLfloat vertices2[] = {
+			// Positions            // Texture Coords
+			 -posX, -posY, 		0.f, 1.f,
+			 posX, -posY, 		1.0f, 1.f,
+			posX, posY,  		1.f, 0.f,
+			-posX,  posY, 		0.f, 0.f
+		};
+		GLuint indices[] = {  // Note that we start from 0!
+			0, 1, 3, // First Triangle
+			1, 2, 3  // Second Triangle
+		};
+
+		//GLuint VBO2, EBO2;
 		glGenVertexArrays(1, &VAO2);
 		glGenBuffers(1, &VBO2);
-		//glGenBuffers(1, &EBO1);
+		glGenBuffers(1, &EBO2);
 
 		glBindVertexArray(VAO2);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO2);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), &vertices2, GL_STATIC_DRAW);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO1);
-		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO2);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
@@ -432,7 +446,6 @@ private:
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
 		glBindVertexArray(0);
-
 	}
 	void save_image_to_file(std::string path, int width, int height, int nrComponents, const void *data) {
 		size_t index = path.rfind(".");

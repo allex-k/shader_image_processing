@@ -10,6 +10,7 @@
 #include "ConsoleEngine.hpp"
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 GLint id = 0;
 GLfloat value = 0.f;
@@ -30,11 +31,12 @@ int main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
 	GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "Shader Image Processing", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 	glfwSetKeyCallback(window, key_callback);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glewExperimental = GL_TRUE;
 	glewInit();
 
@@ -54,7 +56,6 @@ int main() {
 	std::getline(std::cin, destImagePath);
 	std::cout << destImagePath << std::endl;
 #endif
-
 	imageProcessing = new ImageProcessing(window, windowWidth, windowHeight, srcImagePath, destImagePath);
 	//imageProcessing->print();
 	imageProcessing->color_correction(id, value);
@@ -80,22 +81,22 @@ int main() {
 		L"blur regular polygon" ,//14
 		L"blur regular polygon texture", //15
 		L"heart blur", //16
-		L"test",//17
-		L"bloom (fog glow)", //18
+		L"bloom (fog glow)", //17
+		L"show heart textrure",//18
 	};
 	const int nRowsConsole = NUM_EFFECTS * 2 + 6;
 	const int nColumnsConsole = 68;
 	consoleEngine = new ConsoleEngine;
-	consoleEngine->ConstructConsole(nRowsConsole, nColumnsConsole, 7, 15);
+	consoleEngine->ConstructConsole(nRowsConsole, nColumnsConsole, 8, 16);
 	
 	consoleEngine->DrawString(0, 15, L"Shader Image Processing");
-	consoleEngine->set_color(0, 2, 0, nColumnsConsole, 0x001f);
+	consoleEngine->set_color(0, 2, 0, nColumnsConsole, 0x003f);
 	
 	consoleEngine->add_description(description, 2, NUM_EFFECTS);
 
 	consoleEngine->DrawString(NUM_EFFECTS * 2+2, 0, L"Left/A, Right/D, Up, Down, Enter-apply changes, S-save to file", 0x0003);
 	consoleEngine->DrawString(NUM_EFFECTS * 2 + 3, 0, L"Z/C-blur scale, Q/E-change namber of vertices in polygon, R-reset", 0x0003);
-	
+	consoleEngine->set_title(L"Shader Image Processing");
 	consoleEngine->update(id, value, nVertices, blurScale, gamma);
 	consoleEngine->show();
 
@@ -144,10 +145,16 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		if (id >= 10 && id <= 12) imageProcessing->blur_2_steps(id, value, blurScale, gamma);
 		if (id == 13) imageProcessing->sharpness(id, value, gamma);
 		if(id == 14) imageProcessing->regular_polygon_blur(id, value, nVertices, blurScale, gamma);
-		if (id == 15 || id == 16) imageProcessing->blur_texture_kernel(id, value, nVertices, blurScale, gamma);
-		if (id == 17) imageProcessing->draw_blur_texture(id, value, nVertices, blurScale, gamma);
-		if (id == 18) imageProcessing->bloom(id, value, blurScale, gamma);
+		if (id == 15 || id == 16)imageProcessing->blur_texture_kernel(id, value, nVertices, blurScale, gamma);
+		if (id == 17) imageProcessing->bloom(id, value, blurScale, gamma);
+		if (id == 18) imageProcessing->draw_blur_texture(id, value, nVertices, blurScale, gamma);
 
 		imageProcessing->show();
 	}
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	imageProcessing->resize(width, height);
+	imageProcessing->show();
 }

@@ -27,6 +27,8 @@ protected:
 
 	int descriptionStartColunmNum, nEffects;
 
+	short activeLineColor = 0x00b0, mainColor=0x000f, valuesColor=0x0008;
+
 
 	int Error(const wchar_t *msg)
 	{
@@ -36,9 +38,6 @@ protected:
 		wprintf(L"ERROR: %s\n\t%s\n", msg, buf);
 		return 0;
 	}
-
-	// These need to be static because of the OnDestroy call the OS may make. The OS
-	// spawns a special thread just for that
 
 
 public:
@@ -61,20 +60,6 @@ public:
 		m_nScreenWidth = ncols;
 		m_nScreenHeight = nrows;
 
-		// Update 13/09/2017 - It seems that the console behaves differently on some systems
-		// and I'm unsure why this is. It could be to do with windows default settings, or
-		// screen resolutions, or system languages. Unfortunately, MSDN does not offer much
-		// by way of useful information, and so the resulting sequence is the reult of experiment
-		// that seems to work in multiple cases.
-		//
-		// The problem seems to be that the SetConsoleXXX functions are somewhat circular and 
-		// fail depending on the state of the current console properties, i.e. you can't set
-		// the buffer size until you set the screen size, but you can't change the screen size
-		// until the buffer size is correct. This coupled with a precise ordering of calls
-		// makes this procedure seem a little mystical :-P. Thanks to wowLinh for helping - Jx9
-
-		// Change console visual size to a minimum so ScreenBuffer can shrink
-		// below the actual visual size
 		m_rectWindow = { 0, 0, 1, 1 };
 		SetConsoleWindowInfo(m_hConsole, TRUE, &m_rectWindow);
 
@@ -137,24 +122,6 @@ public:
 		return 1;
 	}
 
-	/*void Draw(int x, int y, short c = 0x2588, short col = 0x000F)
-	{
-		if (x >= 0 && x < m_nScreenWidth && y >= 0 && y < m_nScreenHeight)
-		{
-			m_bufScreen[y * m_nScreenWidth + x].Char.UnicodeChar = c;
-			m_bufScreen[y * m_nScreenWidth + x].Attributes = col;
-		}
-	}*/
-
-	/*void Fill(int x1, int y1, int x2, int y2, short c = 0x2588, short col = 0x000F)
-	{
-		Clip(x1, y1);
-		Clip(x2, y2);
-		for (int x = x1; x < x2; x++)
-			for (int y = y1; y < y2; y++)
-				Draw(x, y, c, col);
-	}*/
-
 	void DrawString(int row, int column, std::wstring c, short col = 0x000F)
 	{
 		for (size_t i = 0; i < c.size(); i++)
@@ -172,11 +139,11 @@ public:
 		if (y >= m_nScreenHeight) y = m_nScreenHeight-1;
 	}
 
-	void add_description(std::wstring* text, int columnNum, int _nEffects, short col = 0x000f) {
+	void add_description(std::wstring* text, int columnNum, int _nEffects) {
 		descriptionStartColunmNum = columnNum;
 		nEffects = _nEffects;
 		for (int i = 0; i < nEffects; ++i) {
-			DrawString(columnNum,0 , text[i], col);
+			DrawString(columnNum,0 , text[i], mainColor);
 			columnNum += 2;
 		}
 
@@ -191,12 +158,12 @@ public:
 				m_bufScreen[i * m_nScreenWidth + j].Attributes = col;
 	}
 	
-	void update(int id, float value, int nVertices ,float blurScale, float gamma, short col = 0x0030) {
+	void update(int id, float value, int nVertices ,float blurScale, float gamma) {
 		set_color(descriptionStartColunmNum, descriptionStartColunmNum+nEffects*2, 0, m_nScreenWidth);
 		int columnNum = descriptionStartColunmNum + id * 2;
 		for (int i = 0; i < m_nScreenWidth; ++i) {
-			m_bufScreen[columnNum * m_nScreenWidth + i].Attributes = col;
-			m_bufScreen[(columnNum + 1) * m_nScreenWidth + i].Attributes = col;
+			m_bufScreen[columnNum * m_nScreenWidth + i].Attributes = activeLineColor;
+			m_bufScreen[(columnNum + 1) * m_nScreenWidth + i].Attributes = activeLineColor;
 
 		}
 		int sliderPositionX = (int)scale(value, -1.f, 1.f, 0.f, (float)(m_nScreenWidth - 1));
@@ -211,12 +178,18 @@ public:
 		text += L"blurScale=" + std::to_wstring(blurScale).substr(0, 6) + L"  ";
 		text += L"gamma=" + std::to_wstring(gamma).substr(0, 6) + L"  ";
 
-		DrawString(m_nScreenHeight - 1, 0, text, 0x0008);
+		DrawString(m_nScreenHeight - 1, 0, text, valuesColor);
 		}
 
+	void set_title(std::wstring title) {
+		wchar_t s[256];
+		swprintf_s(s, 256, title.c_str());
+		SetConsoleTitle(s);
+	}
 	void show() {
 		WriteConsoleOutput(m_hConsole, m_bufScreen, { (short)m_nScreenWidth, (short)m_nScreenHeight }, { 0,0 }, &m_rectWindow);
 	}
+
 
 	~ConsoleEngine()
 	{
