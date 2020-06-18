@@ -1,5 +1,5 @@
-//#define ENTER_PATH_TO_IMAGE
-//#define ENTER_PATH_TO_RESULT
+#define ENTER_PATH_TO_IMAGE
+#define ENTER_PATH_TO_RESULT
 
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -39,11 +39,14 @@ int main() {
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glewExperimental = GL_TRUE;
 	glewInit();
-
+	/*
 	std::string resPath = "res\\";
 	//std::string srcImagePath = resPath + "image.bmp";
 	std::string srcImagePath = resPath + "image1.jpg";
 	std::string destImagePath = resPath + "result.bmp";
+	*/
+	//Pathes to a image and result *bmp file
+	std::string srcImagePath, destImagePath;
 
 #ifdef ENTER_PATH_TO_IMAGE
 	std::cout << "Enter path to image: \n";
@@ -64,25 +67,25 @@ int main() {
 	//Sleep(3000); //щоб побачити повідомлення про помилки
 	
 	std::wstring description[NUM_EFFECTS] = {
-		L"saturation",  //0
-		L"gamma correction",   //1
-		L"brightness",   //2
-		L"contrast",  //3
-		L"white balance (temperature)",  //4
-		L"hue",  //5
-		L"chromatic abberation (dispersion)",  //6
-		L"color_only", // 7
-		L"rgg", //8
-		L"rbb", //9
-		L"gaussion blur", //10
-		L"blur (parabola)", //11
-		L"blur (square)", //12
-		L"sharpness", //13
-		L"blur regular polygon" ,//14
-		L"blur regular polygon texture", //15
-		L"heart blur", //16
-		L"bloom (fog glow)", //17
-		L"show heart textrure",//18
+		L"1.  saturation",  //0
+		L"2.  gamma correction",   //1
+		L"3.  brightness",   //2
+		L"4.  contrast",  //3
+		L"5.  white balance (temperature)",  //4
+		L"6.  hue",  //5
+		L"7.  chromatic abberation (dispersion)",  //6
+		L"8.  color_only", // 7
+		L"9.  rgg", //8
+		L"10. rbb", //9
+		L"11. gaussion blur", //10
+		L"12. blur (parabola)", //11
+		L"13. blur (square)", //12
+		L"14. sharpness", //13
+		L"15. blur regular polygon" ,//14
+		L"16. blur regular polygon texture", //15
+		L"17. heart blur", //16
+		L"18. bloom (fog glow)", //17
+		L"19. show heart textrure",//18
 	};
 	const int nRowsConsole = NUM_EFFECTS * 2 + 6;
 	const int nColumnsConsole = 68;

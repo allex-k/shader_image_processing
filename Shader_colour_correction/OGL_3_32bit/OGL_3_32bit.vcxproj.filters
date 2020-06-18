@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="res">
+      <UniqueIdentifier>{01c4a55b-e413-492a-8121-ebb9e4d3cd61}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -41,5 +44,31 @@
     <ClCompile Include="mainWindowEventProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\blur_2_steps.fs">
+      <Filter>res</Filter>
+    </None>
+    <None Include="res\color_correction.fs">
+      <Filter>res</Filter>
+    </None>
+    <None Include="res\convolution_n_m.fs">
+      <Filter>res</Filter>
+    </None>
+    <None Include="res\convolution_n_m_kern_texture.fs">
+      <Filter>res</Filter>
+    </None>
+    <None Include="res\convolution3x3.fs">
+      <Filter>res</Filter>
+    </None>
+    <None Include="res\empty.fs">
+      <Filter>res</Filter>
+    </None>
+    <None Include="res\empty.vs">
+      <Filter>res</Filter>
+    </None>
+    <None Include="res\mix_textures.fs">
+      <Filter>res</Filter>
+    </None>
   </ItemGroup>
 </Project>
