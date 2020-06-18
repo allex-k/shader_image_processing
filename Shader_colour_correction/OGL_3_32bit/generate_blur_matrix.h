@@ -166,8 +166,6 @@ void draw_heart(Matrix* mtrx, float val = 1) {
 		x = xnew; y = ynew;
 	}
 }
-
-
 void generate_regular_polygon_matrix(float* values, int nrows, int ncols, int nVertices) {
 	Matrix mtrx(values, nrows, ncols);
 	draw_regular_polygon(&mtrx, nVertices);

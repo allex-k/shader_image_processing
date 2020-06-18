@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <iostream>
+#include <string>
 #include "other_functions.h"
 
 #pragma comment(lib, "winmm.lib")
@@ -24,7 +25,8 @@ protected:
 
 	bool m_bConsoleInFocus = true;
 
-	int descriptionStartColunmNum;
+	int descriptionStartColunmNum, nEffects;
+
 
 	int Error(const wchar_t *msg)
 	{
@@ -51,13 +53,13 @@ public:
 		m_sAppName = L"Default";
 	}
 
-	int ConstructConsole(int width, int height, int fontw, int fonth)
+	int ConstructConsole(int nrows, int ncols, int fontw, int fonth)
 	{
 		if (m_hConsole == INVALID_HANDLE_VALUE)
 			return Error(L"Bad Handle");
 
-		m_nScreenWidth = width;
-		m_nScreenHeight = height;
+		m_nScreenWidth = ncols;
+		m_nScreenHeight = nrows;
 
 		// Update 13/09/2017 - It seems that the console behaves differently on some systems
 		// and I'm unsure why this is. It could be to do with windows default settings, or
@@ -135,33 +137,30 @@ public:
 		return 1;
 	}
 
-	void Draw(int x, int y, short c = 0x2588, short col = 0x000F)
+	/*void Draw(int x, int y, short c = 0x2588, short col = 0x000F)
 	{
 		if (x >= 0 && x < m_nScreenWidth && y >= 0 && y < m_nScreenHeight)
 		{
 			m_bufScreen[y * m_nScreenWidth + x].Char.UnicodeChar = c;
 			m_bufScreen[y * m_nScreenWidth + x].Attributes = col;
 		}
-	}
-	void set_color(int x, int y, short col = 0x000F) {
-		m_bufScreen[y * m_nScreenWidth + x].Attributes = col;
-	}
+	}*/
 
-	void Fill(int x1, int y1, int x2, int y2, short c = 0x2588, short col = 0x000F)
+	/*void Fill(int x1, int y1, int x2, int y2, short c = 0x2588, short col = 0x000F)
 	{
 		Clip(x1, y1);
 		Clip(x2, y2);
 		for (int x = x1; x < x2; x++)
 			for (int y = y1; y < y2; y++)
 				Draw(x, y, c, col);
-	}
+	}*/
 
-	void DrawString(int x, int y, std::wstring c, short col = 0x000F)
+	void DrawString(int row, int column, std::wstring c, short col = 0x000F)
 	{
 		for (size_t i = 0; i < c.size(); i++)
 		{
-			m_bufScreen[y * m_nScreenWidth + x + i].Char.UnicodeChar = c[i];
-			m_bufScreen[y * m_nScreenWidth + x + i].Attributes = col;
+			m_bufScreen[row * m_nScreenWidth + column + i].Char.UnicodeChar = c[i];
+			m_bufScreen[row * m_nScreenWidth + column + i].Attributes = col;
 		}
 	}
 
@@ -173,34 +172,47 @@ public:
 		if (y >= m_nScreenHeight) y = m_nScreenHeight-1;
 	}
 
-	void add_description(std::wstring* text, int columnNum, int nLines, short col = 0x000f) {
+	void add_description(std::wstring* text, int columnNum, int _nEffects, short col = 0x000f) {
 		descriptionStartColunmNum = columnNum;
-		for (int i = 0; i < nLines; ++i) {
-			DrawString(0, columnNum, text[i], col);
+		nEffects = _nEffects;
+		for (int i = 0; i < nEffects; ++i) {
+			DrawString(columnNum,0 , text[i], col);
 			columnNum += 2;
 		}
 
 	}
+	void set_color(int row, int column, short col = 0x000F) {
+		m_bufScreen[row * m_nScreenWidth + column].Attributes = col;
+	}
 
-	void reset_color(short col = 0x000f) {
-		for (int i = 0; i < m_nScreenHeight; ++i)
-			for (int j = 0; j < m_nScreenWidth; ++j)
+	void set_color(int rowStart, int rowEnd, int colStart, int colEnd, short col = 0x000F) {
+		for (int i = rowStart; i < rowEnd; ++i)
+			for (int j = colStart; j < colEnd; ++j)
 				m_bufScreen[i * m_nScreenWidth + j].Attributes = col;
 	}
 	
-	void update(int id, float val, short col = 0x0010) {
-		reset_color();
+	void update(int id, float value, int nVertices ,float blurScale, float gamma, short col = 0x0030) {
+		set_color(descriptionStartColunmNum, descriptionStartColunmNum+nEffects*2, 0, m_nScreenWidth);
 		int columnNum = descriptionStartColunmNum + id * 2;
 		for (int i = 0; i < m_nScreenWidth; ++i) {
 			m_bufScreen[columnNum * m_nScreenWidth + i].Attributes = col;
 			m_bufScreen[(columnNum + 1) * m_nScreenWidth + i].Attributes = col;
 
 		}
-		int sliderPositionX = (int)scale(val, -1.f, 1.f, 0.f, (float)(m_nScreenWidth - 1));
+		int sliderPositionX = (int)scale(value, -1.f, 1.f, 0.f, (float)(m_nScreenWidth - 1));
 		int sliderPositionY = columnNum + 1;
 		Clip(sliderPositionX, sliderPositionY);
-		set_color(sliderPositionX, sliderPositionY);
-	}
+		set_color(sliderPositionY, sliderPositionX);
+
+		std::wstring text;
+		text += L"id="+std::to_wstring(id)+L"  ";
+		text += L"value=" + std::to_wstring(value).substr(0, 6) + L"  ";
+		text += L"nVertices=" + std::to_wstring(nVertices) + L"  ";
+		text += L"blurScale=" + std::to_wstring(blurScale).substr(0, 6) + L"  ";
+		text += L"gamma=" + std::to_wstring(gamma).substr(0, 6) + L"  ";
+
+		DrawString(m_nScreenHeight - 1, 0, text, 0x0008);
+		}
 
 	void show() {
 		WriteConsoleOutput(m_hConsole, m_bufScreen, { (short)m_nScreenWidth, (short)m_nScreenHeight }, { 0,0 }, &m_rectWindow);

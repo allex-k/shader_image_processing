@@ -16,6 +16,7 @@ GLfloat value = 0.f;
 
 int nVertices = 5;
 GLfloat blurScale = 1.f;
+GLfloat gamma = 2.2f;
 
 const int NUM_EFFECTS = 19;
 
@@ -59,10 +60,8 @@ int main() {
 	imageProcessing->color_correction(id, value);
 	imageProcessing->show();
 
+	//Sleep(3000); //щоб побачити повідомлення про помилки
 	
-	Sleep(3000); //щоб побачити повідомлення про помилки
-	consoleEngine = new ConsoleEngine;
-	consoleEngine->ConstructConsole(60, NUM_EFFECTS*2, 8, 16);
 	std::wstring description[NUM_EFFECTS] = {
 		L"saturation",  //0
 		L"gamma correction",   //1
@@ -82,10 +81,22 @@ int main() {
 		L"blur regular polygon texture", //15
 		L"heart blur", //16
 		L"test",//17
-		L"bloom", //18
+		L"bloom (fog glow)", //18
 	};
-	consoleEngine->add_description(description, 0, NUM_EFFECTS);
-	consoleEngine->update(id, value);
+	const int nRowsConsole = NUM_EFFECTS * 2 + 6;
+	const int nColumnsConsole = 68;
+	consoleEngine = new ConsoleEngine;
+	consoleEngine->ConstructConsole(nRowsConsole, nColumnsConsole, 7, 15);
+	
+	consoleEngine->DrawString(0, 15, L"Shader Image Processing");
+	consoleEngine->set_color(0, 2, 0, nColumnsConsole, 0x001f);
+	
+	consoleEngine->add_description(description, 2, NUM_EFFECTS);
+
+	consoleEngine->DrawString(NUM_EFFECTS * 2+2, 0, L"Left/A, Right/D, Up, Down, Enter-apply changes, S-save to file", 0x0003);
+	consoleEngine->DrawString(NUM_EFFECTS * 2 + 3, 0, L"Z/C-blur scale, Q/E-change namber of vertices in polygon, R-reset", 0x0003);
+	
+	consoleEngine->update(id, value, nVertices, blurScale, gamma);
 	consoleEngine->show();
 
 	while (!glfwWindowShouldClose(window))
@@ -100,16 +111,6 @@ int main() {
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-	/*if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-
-	if (key == GLFW_KEY_ENTER && action == GLFW_PRESS) {
-		imageProcessing->apply_changes(); return;
-	}
-	if (key == GLFW_KEY_S && action == GLFW_PRESS) {
-		imageProcessing->save_to_file(); return;
-	}*/
-
 	if (action == GLFW_PRESS || action == GLFW_REPEAT)
 	{
 		switch (key)
@@ -129,21 +130,23 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		case GLFW_KEY_E: ++nVertices; break;
 		case GLFW_KEY_Z: blurScale -= 0.5f; break;
 		case GLFW_KEY_C: blurScale += 0.5f; break;
-		case GLFW_KEY_R: blurScale = 1.f; break;
+		case GLFW_KEY_R: blurScale = 1.f; gamma = 2.2f; break;
+		case GLFW_KEY_1: gamma -=0.2f; break;
+		case GLFW_KEY_2: gamma += 0.2f; break;
 
 		default:
 			break;
 		}
-		consoleEngine->update(id, value);
+		consoleEngine->update(id, value, nVertices, blurScale, gamma);
 		consoleEngine->show();
 
 		if (id <= 13) imageProcessing->color_correction(id, value);
-		if (id >= 10 && id <= 12) imageProcessing->blur_2_steps(id, value, blurScale);
-		if (id == 13) imageProcessing->sharpness(id, value);
-		if(id == 14) imageProcessing->regular_polygon_blur(id, value, nVertices, blurScale);
-		if (id == 15 || id == 16) imageProcessing->blur_texture_kernel(id, value, nVertices, blurScale);
-		if (id == 17) imageProcessing->draw_blur_texture(id, value, nVertices, blurScale);
-		if (id == 18) imageProcessing->bloom(id, value, blurScale);
+		if (id >= 10 && id <= 12) imageProcessing->blur_2_steps(id, value, blurScale, gamma);
+		if (id == 13) imageProcessing->sharpness(id, value, gamma);
+		if(id == 14) imageProcessing->regular_polygon_blur(id, value, nVertices, blurScale, gamma);
+		if (id == 15 || id == 16) imageProcessing->blur_texture_kernel(id, value, nVertices, blurScale, gamma);
+		if (id == 17) imageProcessing->draw_blur_texture(id, value, nVertices, blurScale, gamma);
+		if (id == 18) imageProcessing->bloom(id, value, blurScale, gamma);
 
 		imageProcessing->show();
 	}

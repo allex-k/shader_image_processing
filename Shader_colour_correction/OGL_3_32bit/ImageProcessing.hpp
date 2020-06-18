@@ -74,7 +74,7 @@ public:
 		{
 		case 10: genenate_gaussian_blur_vector(coeffVector, SIZE); break;
 		case 11: genenate_blur_vector_parabola(coeffVector, SIZE, 2.f); break;
-		case 12: genenate_blur_vector_square(coeffVector, SIZE); gamma = 4.0;  break;
+		case 12: genenate_blur_vector_square(coeffVector, SIZE);  break;
 		default:
 			break;
 		}
