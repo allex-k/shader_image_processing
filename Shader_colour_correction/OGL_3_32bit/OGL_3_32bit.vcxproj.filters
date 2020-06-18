@@ -38,9 +38,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src_main_color_correction_big_framebuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="mainWindowEventProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
