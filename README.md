@@ -17,13 +17,13 @@ So far you can choose on of thise options to change your photo:
 - Sharpness
 - Gaussian blur
 - Blur, whith imitates aperture of camera with blades 
-- Blur with heard ♥ shaped aperture hole)
+- Blur with heart ♥ shaped aperture hole)
 - Fog glow
 - And others
 ## Technical features
 To make some changes to the photo, we are using shaders, all of them can be found in $/res/ dir.
 
-Application works with jpg, png, bmp image formats, supports saving to file. The program does not overwright your existing photo so you can keep them both. 
+Application works with jpg, png, bmp image formats, supports saving to file in those formats. The program does not overwright your existing photo so you can keep them both. 
 
 Program consists of 1 main .cpp file which is mainWindowEventProcessing.cpp, and 3 majore .h files:
 1. mainWindowEventProcessing.cpp - initialize glfw, creating window for photo, handle input, creates instances of the class imageProcessing and consoleEngine.
