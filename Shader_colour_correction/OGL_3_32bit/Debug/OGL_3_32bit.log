@@ -22,4 +22,7 @@ D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\mainWin
 D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\mainWindowEventProcessing.cpp(131,36): warning C4305: +=: усечение из "double" в "GLfloat"
 D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\mainWindowEventProcessing.cpp(132,33): warning C4305: -=: усечение из "double" в "GLfloat"
 D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\mainWindowEventProcessing.cpp(133,33): warning C4305: +=: усечение из "double" в "GLfloat"
+LINK : warning LNK4098: библиотека по умолчанию "MSVCRT" конфликтует с использованием других библиотек; используйте /NODEFAULTLIB:library
+LINK : warning LNK4098: библиотека по умолчанию "LIBCMT" конфликтует с использованием других библиотек; используйте /NODEFAULTLIB:library
+glew32s.lib(glew.obj) : warning LNK4099: "vc120.pdb" PDB не найден с "glew32s.lib(glew.obj)" или на "D:\proect\for my tryies\for_commits\Shader_colour_correction\Debug\vc120.pdb"; компоновка объекта выполняется как при отсутствии отладочных данных
   OGL_3_32bit.vcxproj -> D:\proect\for my tryies\for_commits\Shader_colour_correction\Debug\Shader_image_processing_v2.exe

@@ -74,7 +74,7 @@ int main() {
 		L"5.  White balance (temperature)",  //4
 		L"6.  Hue",  //5
 		L"7.  Chromatic abberation (dispersion)",  //6
-		L"8.  Color_only", // 7
+		L"8.  Color only", // 7
 		L"9.  Rgg", //8
 		L"10. Rbb", //9
 		L"11. Gaussion blur", //10
@@ -88,7 +88,7 @@ int main() {
 		L"19. Bloom (fog glow)", //18
 	};
 	const int nRowsConsole = NUM_EFFECTS * 2 + 9;
-	const int nColumnsConsole = 73;
+	const int nColumnsConsole = 75;
 	consoleEngine = new ConsoleEngine;
 	consoleEngine->ConstructConsole(nRowsConsole, nColumnsConsole, 8, 16);
 	
@@ -97,10 +97,10 @@ int main() {
 	
 	consoleEngine->add_description(description, 2, NUM_EFFECTS);
 
-	consoleEngine->DrawString(NUM_EFFECTS * 2 + 2, 0, L"Controls:", 0x0003);
-	consoleEngine->DrawString(NUM_EFFECTS * 2 + 3, 0, L"Up, Down - to choose effect, Enter-apply changes, S-save to file, R-reset", 0x0003);
-	consoleEngine->DrawString(NUM_EFFECTS * 2 + 4, 0, L"Left/A, Right/D - to change value, Q/E-change number of vertices in blure", 0x0003);
-	consoleEngine->DrawString(NUM_EFFECTS * 2 + 5, 0, L"Z/C - blur scale, 1,2 - to change gamma", 0x0003);
+	consoleEngine->DrawString(NUM_EFFECTS * 2 + 2, 1, L"Controls:", 0x0003);
+	consoleEngine->DrawString(NUM_EFFECTS * 2 + 3, 1, L"Up, Down - to choose effect, Enter-apply changes, S-save to file, R-reset", 0x0003);
+	consoleEngine->DrawString(NUM_EFFECTS * 2 + 4, 1, L"Left/A, Right/D - to change value, Q/E-change number of vertices in blure", 0x0003);
+	consoleEngine->DrawString(NUM_EFFECTS * 2 + 5, 1, L"Z/C - blur scale, 1,2 - to change gamma", 0x0003);
 	consoleEngine->set_title(L"Shader Image Processing");
 	consoleEngine->update(id, value, nVertices, blurScale, gamma);
 	consoleEngine->show();
