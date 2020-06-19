@@ -1,8 +1,5 @@
 #version 330 core
 
-//оптимізований блюр прохід по вертикалі, по горизонталі окремо
-//потрібно два виклики шейдера для горизонтального, для вертикального розмиття
-//потрібен FrameBuffer
 const int MAX_SIZE  = 512;
 
 in vec2 TexCoord;
@@ -10,8 +7,8 @@ out vec4 FragColor;
 uniform sampler2D Texture;
 
 uniform int SIZE;
-uniform vec2 direction; //напрямок розмиття з врахуванням співвідношення сторін
-//зазвичай одна з координат = 0, (напрямок або виртикальний або горизонтальний)
+uniform vec2 direction; 
+
 uniform float[MAX_SIZE] coeffVector;
 uniform float gamma;
 
