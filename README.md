@@ -45,7 +45,7 @@ Program consists of 1 main .cpp file which is mainWindowEventProcessing.cpp, and
 ## Troubleshooting
 1. Make sure that you have retargeted VS project after you cloned repos.
 
-2. If some of blures doesn't work, you probably opened program with integrated videocard, try to choose external. (Problem was spoted on Radeon Vega 8).
+2. If some of blures doesn't work, you probably opened program with integrated videocard, try to choose external. (Problem was spoted on Radeon Vega 8). SOLVED If you want to change shaders files, dont put any Ukrainian or Russian characters(but still, it's works on nVidia's GPU)
 
 3. If navigation keys doesn't work, choose your image as an active window.
 
