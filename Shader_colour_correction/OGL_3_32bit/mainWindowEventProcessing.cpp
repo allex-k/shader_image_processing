@@ -87,18 +87,20 @@ int main() {
 		L"18. Show heart textrure",//17
 		L"19. Bloom (fog glow)", //18
 	};
-	const int nRowsConsole = NUM_EFFECTS * 2 + 6;
-	const int nColumnsConsole = 68;
+	const int nRowsConsole = NUM_EFFECTS * 2 + 9;
+	const int nColumnsConsole = 73;
 	consoleEngine = new ConsoleEngine;
 	consoleEngine->ConstructConsole(nRowsConsole, nColumnsConsole, 8, 16);
 	
-	consoleEngine->DrawString(0, 15, L"Shader Image Processing");
+	consoleEngine->DrawString(0, 20, L"Shader Image Processing");
 	consoleEngine->set_color(0, 2, 0, nColumnsConsole, 0x003f);
 	
 	consoleEngine->add_description(description, 2, NUM_EFFECTS);
 
-	consoleEngine->DrawString(NUM_EFFECTS * 2+2, 0, L"Left/A, Right/D, Up, Down, Enter-apply changes, S-save to file", 0x0003);
-	consoleEngine->DrawString(NUM_EFFECTS * 2 + 3, 0, L"Z/C-blur scale, Q/E-change namber of vertices in polygon, R-reset", 0x0003);
+	consoleEngine->DrawString(NUM_EFFECTS * 2 + 2, 0, L"Controls:", 0x0003);
+	consoleEngine->DrawString(NUM_EFFECTS * 2 + 3, 0, L"Up, Down - to choose effect, Enter-apply changes, S-save to file, R-reset", 0x0003);
+	consoleEngine->DrawString(NUM_EFFECTS * 2 + 4, 0, L"Left/A, Right/D - to change value, Q/E-change number of vertices in blure", 0x0003);
+	consoleEngine->DrawString(NUM_EFFECTS * 2 + 5, 0, L"Z/C - blur scale, 1,2 - to change gamma", 0x0003);
 	consoleEngine->set_title(L"Shader Image Processing");
 	consoleEngine->update(id, value, nVertices, blurScale, gamma);
 	consoleEngine->show();
