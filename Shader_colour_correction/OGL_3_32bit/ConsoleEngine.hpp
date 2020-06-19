@@ -34,7 +34,7 @@ protected:
 	{
 		wchar_t buf[256];
 		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), buf, 256, NULL);
-		SetConsoleActiveScreenBuffer(m_hOriginalConsole);
+		SetConsoleActiveScreenBuffer(m_hOriginalConsole); //To treat console as array of carracters
 		wprintf(L"ERROR: %s\n\t%s\n", msg, buf);
 		return 0;
 	}
@@ -51,7 +51,7 @@ public:
 
 		m_sAppName = L"Default";
 	}
-
+	//Creating a console
 	int ConstructConsole(int nrows, int ncols, int fontw, int fonth)
 	{
 		if (m_hConsole == INVALID_HANDLE_VALUE)
@@ -81,16 +81,6 @@ public:
 		cfi.FontFamily = FF_DONTCARE;
 		cfi.FontWeight = FW_NORMAL;
 
-		/*	DWORD version = GetVersion();
-			DWORD major = (DWORD)(LOBYTE(LOWORD(version)));
-			DWORD minor = (DWORD)(HIBYTE(LOWORD(version)));*/
-
-			//if ((major > 6) || ((major == 6) && (minor >= 2) && (minor < 4)))		
-			//	wcscpy_s(cfi.FaceName, L"Raster"); // Windows 8 :(
-			//else
-			//	wcscpy_s(cfi.FaceName, L"Lucida Console"); // Everything else :P
-
-			//wcscpy_s(cfi.FaceName, L"Liberation Mono");
 		wcscpy_s(cfi.FaceName, L"Consolas");
 		if (!SetCurrentConsoleFontEx(m_hConsole, false, &cfi))
 			return Error(L"SetCurrentConsoleFontEx");
@@ -118,10 +108,10 @@ public:
 		m_bufScreen = new CHAR_INFO[m_nScreenWidth*m_nScreenHeight];
 		memset(m_bufScreen, 0, sizeof(CHAR_INFO) * m_nScreenWidth * m_nScreenHeight);
 
-		//SetConsoleCtrlHandler((PHANDLER_ROUTINE)CloseHandler, TRUE);
 		return 1;
 	}
 
+	//Draw char array into a console window
 	void DrawString(int row, int column, std::wstring c, short col = 0x000F)
 	{
 		for (size_t i = 0; i < c.size(); i++)
@@ -158,6 +148,7 @@ public:
 				m_bufScreen[i * m_nScreenWidth + j].Attributes = col;
 	}
 	
+	//used to update information of console
 	void update(int id, float value, int nVertices ,float blurScale, float gamma) {
 		set_color(descriptionStartColunmNum, descriptionStartColunmNum+nEffects*2, 0, m_nScreenWidth);
 		int columnNum = descriptionStartColunmNum + id * 2;
@@ -187,7 +178,7 @@ public:
 		SetConsoleTitle(s);
 	}
 	void show() {
-		WriteConsoleOutput(m_hConsole, m_bufScreen, { (short)m_nScreenWidth, (short)m_nScreenHeight }, { 0,0 }, &m_rectWindow);
+		WriteConsoleOutput(m_hConsole, m_bufScreen, { (short)m_nScreenWidth, (short)m_nScreenHeight }, { 0,0 }, &m_rectWindow); //Is used to update console
 	}
 
 

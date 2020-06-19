@@ -257,7 +257,7 @@ public:
 	}
 	
 	void show() {
-		//############################# з frameFuffer2  на екран #######################################
+		//############################# з frameBuffer2  на екран #######################################
 		glViewport(0, 0, windowWidth, windowHeight);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

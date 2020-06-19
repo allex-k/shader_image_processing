@@ -29,8 +29,6 @@
     <ClInclude Include="ImageProcessing.hpp" />
     <ClInclude Include="other_functions.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="stb_image.h" />
-    <ClInclude Include="stb_image_write.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mainWindowEventProcessing.cpp" />
@@ -135,7 +133,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Assets\glew-2.1.0\include;$(SolutionDir)Assets\glfw-3.3.2.bin.WIN32\include;$(SolutionDir)Assets\glm;$(SolutionDir)Assets\SOIL_32_bit\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Assets\glew-2.1.0\include;$(SolutionDir)Assets\glfw-3.3.2.bin.WIN32\include;$(SolutionDir)Assets\glm;$(SolutionDir)Assets\SOIL_32_bit\include;$(SolutionDir)Assets\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)Assets\glfw-3.3.2.bin.WIN32\lib-vc2017;$(SolutionDir)Assets\glew-2.1.0\lib\Release\Win32;$(SolutionDir)Assets\SOIL_32_bit\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -163,7 +161,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Assets\glew-2.1.0\include;$(SolutionDir)Assets\glfw-3.3.2.bin.WIN32\include;$(SolutionDir)Assets\glm;$(SolutionDir)Assets\SOIL_32_bit\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Assets\glew-2.1.0\include;$(SolutionDir)Assets\glfw-3.3.2.bin.WIN32\include;$(SolutionDir)Assets\glm;$(SolutionDir)Assets\SOIL_32_bit\include;$(SolutionDir)Assets\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
