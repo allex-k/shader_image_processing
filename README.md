@@ -15,7 +15,10 @@ So far you can choose on of thise options to change your photo:
 - Hue
 - Chromatic abberation (dispersion)
 - Sharpness
-- Diffenrent blurs
+- Gaussian blur
+- Blur, whith imitates aperture of camera with blades 
+- Blur with heard ♥ shaped aperture hole)
+- Fog glow
 - And others
 ## Technical features
 To make some changes to the photo, we are using shaders, all of them can be found in $/res/ dir.
