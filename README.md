@@ -25,11 +25,11 @@ Application works with jpg, png, bmp image formats, supports saving to file.
 ## How to use?
 1.Open Shader_image_processing_v2.exe, highly recommended to open it with your external videocard.
           
-![](screenshots_new/screenshot1_1.PNG)
+![](screenshots_new/screenshot1_1.png)
           
 2.Type path to your image and type where you whant to save a result (pathes can be absolute and relative).
           
-![](screenshots_new/screenshot1_2.PNG)
+![](screenshots_new/screenshot1_2.png)
           
 3.Navigate through console using your keyboard, to confirm changes type Enter, to save your file type S.
 
@@ -41,14 +41,14 @@ Application works with jpg, png, bmp image formats, supports saving to file.
 3. If navigation window become crazy, just type some of navigation keys.
 
 ## Screenshots
-![](screenshots_new/screenshot1_3.PNG)
-![](screenshots_new/screenshot1_4.PNG)
-![](screenshots_new/screenshot1_5.PNG)
-![](screenshots_new/screenshot1_6.PNG)
-![](screenshots_new/screenshot1_7.PNG)
-![](screenshots_new/screenshot1_8.PNG)
-![](screenshots_new/screenshot1_9.PNG)
+![](screenshots_new/screenshot1_3.png)
+![](screenshots_new/screenshot1_4.png)
+![](screenshots_new/screenshot1_5.png)
+![](screenshots_new/screenshot1_6.png)
+![](screenshots_new/screenshot1_7.png)
+![](screenshots_new/screenshot1_8.png)
+![](screenshots_new/screenshot1_9.png)
       
 Posible result:
 
-![](screenshots_new/screenshot1_10.PNG)
+![](screenshots_new/screenshot1_10.png)
