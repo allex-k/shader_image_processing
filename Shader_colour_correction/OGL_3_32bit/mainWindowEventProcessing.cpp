@@ -67,25 +67,25 @@ int main() {
 	//Sleep(3000); //щоб побачити повідомлення про помилки
 	
 	std::wstring description[NUM_EFFECTS] = {
-		L"1.  saturation",  //0
-		L"2.  gamma correction",   //1
-		L"3.  brightness",   //2
-		L"4.  contrast",  //3
-		L"5.  white balance (temperature)",  //4
-		L"6.  hue",  //5
-		L"7.  chromatic abberation (dispersion)",  //6
-		L"8.  color_only", // 7
-		L"9.  rgg", //8
-		L"10. rbb", //9
-		L"11. gaussion blur", //10
-		L"12. blur (parabola)", //11
-		L"13. blur (square)", //12
-		L"14. sharpness", //13
-		L"15. blur regular polygon" ,//14
-		L"16. blur regular polygon texture", //15
-		L"17. heart blur", //16
-		L"18. bloom (fog glow)", //17
-		L"19. show heart textrure",//18
+		L"1.  Saturation",  //0
+		L"2.  Gamma correction",   //1
+		L"3.  Brightness",   //2
+		L"4.  Contrast",  //3
+		L"5.  White balance (temperature)",  //4
+		L"6.  Hue",  //5
+		L"7.  Chromatic abberation (dispersion)",  //6
+		L"8.  Color_only", // 7
+		L"9.  Rgg", //8
+		L"10. Rbb", //9
+		L"11. Gaussion blur", //10
+		L"12. Blur (parabola)", //11
+		L"13. Blur (square)", //12
+		L"14. Sharpness", //13
+		L"15. Blur regular polygon" ,//14
+		L"16. Blur regular polygon texture", //15
+		L"17. Heart blur", //16
+		L"18. Show heart textrure",//17
+		L"19. Bloom (fog glow)", //18
 	};
 	const int nRowsConsole = NUM_EFFECTS * 2 + 6;
 	const int nColumnsConsole = 68;
@@ -149,9 +149,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		if (id == 13) imageProcessing->sharpness(id, value, gamma);
 		if(id == 14) imageProcessing->regular_polygon_blur(id, value, nVertices, blurScale, gamma);
 		if (id == 15 || id == 16)imageProcessing->blur_texture_kernel(id, value, nVertices, blurScale, gamma);
-		if (id == 17) imageProcessing->bloom(id, value, blurScale, gamma);
-		if (id == 18) imageProcessing->draw_blur_texture(id, value, nVertices, blurScale, gamma);
-
+		if (id == 17) imageProcessing->draw_blur_texture(id, value, nVertices, blurScale, gamma);
+		if (id == 18) imageProcessing->bloom(id, value, blurScale, gamma);
+		
 		imageProcessing->show();
 	}
 }

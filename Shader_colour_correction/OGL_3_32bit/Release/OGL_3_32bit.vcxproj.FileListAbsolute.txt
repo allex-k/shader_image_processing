@@ -1,0 +1,8 @@
+D:\proect\for my tryies\for_commits\Shader_colour_correction\Release\res\blur_2_steps.fs
+D:\proect\for my tryies\for_commits\Shader_colour_correction\Release\res\color_correction.fs
+D:\proect\for my tryies\for_commits\Shader_colour_correction\Release\res\convolution3x3.fs
+D:\proect\for my tryies\for_commits\Shader_colour_correction\Release\res\convolution_n_m.fs
+D:\proect\for my tryies\for_commits\Shader_colour_correction\Release\res\convolution_n_m_kern_texture.fs
+D:\proect\for my tryies\for_commits\Shader_colour_correction\Release\res\empty.fs
+D:\proect\for my tryies\for_commits\Shader_colour_correction\Release\res\empty.vs
+D:\proect\for my tryies\for_commits\Shader_colour_correction\Release\res\mix_textures.fs

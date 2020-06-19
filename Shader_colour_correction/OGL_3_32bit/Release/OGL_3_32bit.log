@@ -1,24 +1,32 @@
-﻿  mainWindowEventProcessing.cpp
-d:\0_visual_studio_projects\opengl_2020\shader_colour_correction_v2\ogl_3_32bit\other_functions.h(18): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-d:\0_visual_studio_projects\opengl_2020\shader_colour_correction_v2\ogl_3_32bit\other_functions.h(20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-d:\0_visual_studio_projects\opengl_2020\shader_colour_correction_v2\ogl_3_32bit\generate_blur_matrix.h(127): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-d:\0_visual_studio_projects\opengl_2020\shader_colour_correction_v2\ogl_3_32bit\generate_blur_matrix.h(128): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-d:\0_visual_studio_projects\opengl_2020\shader_colour_correction_v2\ogl_3_32bit\imageprocessing.hpp(240): warning C4305: 'initializing': truncation from 'double' to 'float'
-d:\0_visual_studio_projects\opengl_2020\shader_colour_correction_v2\ogl_3_32bit\imageprocessing.hpp(70): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-d:\0_visual_studio_projects\opengl_2020\shader_colour_correction_v2\ogl_3_32bit\imageprocessing.hpp(115): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-d:\0_visual_studio_projects\opengl_2020\shader_colour_correction_v2\ogl_3_32bit\imageprocessing.hpp(123): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-d:\0_visual_studio_projects\opengl_2020\shader_colour_correction_v2\ogl_3_32bit\imageprocessing.hpp(148): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(130): warning C4005: 'APIENTRY': macro redefinition
-  d:\programming_libs\glfw-3.3.2.bin.win32\include\glfw\glfw3.h(123): note: see previous definition of 'APIENTRY'
-d:\0_visual_studio_projects\opengl_2020\shader_colour_correction_v2\ogl_3_32bit\mainwindoweventprocessing.cpp(120): warning C4305: '-=': truncation from 'double' to 'GLfloat'
-d:\0_visual_studio_projects\opengl_2020\shader_colour_correction_v2\ogl_3_32bit\mainwindoweventprocessing.cpp(121): warning C4305: '+=': truncation from 'double' to 'GLfloat'
-d:\0_visual_studio_projects\opengl_2020\shader_colour_correction_v2\ogl_3_32bit\mainwindoweventprocessing.cpp(122): warning C4305: '-=': truncation from 'double' to 'GLfloat'
-d:\0_visual_studio_projects\opengl_2020\shader_colour_correction_v2\ogl_3_32bit\mainwindoweventprocessing.cpp(123): warning C4305: '+=': truncation from 'double' to 'GLfloat'
-LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
-  Generating code
-  1 of 525 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
-  Finished generating code
-glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'D:\0_visual_studio_projects\OpenGL_2020\Shader_colour_correction_v2\Release\vc120.pdb'; linking object as if no debug info
-  OGL_3_32bit.vcxproj -> D:\0_visual_studio_projects\OpenGL_2020\Shader_colour_correction_v2\Release\Shader_image_processing_v2.exe
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(467,5): warning MSB8028: промежуточный каталог (Release\) содержит файлы, которые используются совместно с другим проектом (shader_colour_correction.vcxproj).  Это может привести к ошибкам очистки и перестроения.
+  mainWindowEventProcessing.cpp
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\other_functions.h(18,12): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\other_functions.h(20,22): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\generate_blur_matrix.h(128,31): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\generate_blur_matrix.h(129,40): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\generate_blur_matrix.h(129,27): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\generate_blur_matrix.h(147,30): warning C4305: аргумент: усечение из "double" в "float"
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\generate_blur_matrix.h(152,33): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\generate_blur_matrix.h(155,33): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\generate_blur_matrix.h(159,40): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\generate_blur_matrix.h(162,40): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\ImageProcessing.hpp(315,121): warning C4305: инициализация: усечение из "double" в "float"
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\ImageProcessing.hpp(71,26): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\ImageProcessing.hpp(116,98): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\ImageProcessing.hpp(116,80): warning C4244: аргумент: преобразование "double" в "GLfloat", возможна потеря данных
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\ImageProcessing.hpp(124,9): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\ImageProcessing.hpp(149,9): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\ImageProcessing.hpp(221,9): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: APIENTRY: изменение макроопределения
+D:\proect\for my tryies\for_commits\Shader_colour_correction\Assets\glfw-3.3.2.bin.WIN32\include\GLFW\glfw3.h(123): message : см. предыдущее определение "APIENTRY"
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\mainWindowEventProcessing.cpp(128,35): warning C4305: -=: усечение из "double" в "GLfloat"
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\mainWindowEventProcessing.cpp(129,36): warning C4305: +=: усечение из "double" в "GLfloat"
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\mainWindowEventProcessing.cpp(130,33): warning C4305: -=: усечение из "double" в "GLfloat"
+D:\proect\for my tryies\for_commits\Shader_colour_correction\OGL_3_32bit\mainWindowEventProcessing.cpp(131,33): warning C4305: +=: усечение из "double" в "GLfloat"
+  Previous IPDB not found, fall back to full compilation.
+LINK : warning LNK4098: библиотека по умолчанию "LIBCMT" конфликтует с использованием других библиотек; используйте /NODEFAULTLIB:library
+  Создание кода
+  All 573 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Создание кода завершено
+glew32s.lib(glew.obj) : warning LNK4099: "vc120.pdb" PDB не найден с "glew32s.lib(glew.obj)" или на "D:\proect\for my tryies\for_commits\Shader_colour_correction\Release\vc120.pdb"; компоновка объекта выполняется как при отсутствии отладочных данных
+  OGL_3_32bit.vcxproj -> D:\proect\for my tryies\for_commits\Shader_colour_correction\Release\Shader_image_processing_v2.exe
