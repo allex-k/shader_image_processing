@@ -1,8 +1,7 @@
 #version 330 core
 
-//оптимізований блюр прохід по вертикалі, по горизонталі окремо
-//потрібно два виклики шейдера для горизонтального, для вертикального розмиття
-//потрібен FrameBuffer
+//optimized blur, verticall and horizontal passages separately
+//requires two shader calls for horizontal, for vertical blur
 const int MAX_SIZE  = 512;
 
 in vec2 TexCoord;
@@ -10,8 +9,9 @@ out vec4 FragColor;
 uniform sampler2D Texture;
 
 uniform int SIZE;
-uniform vec2 direction; //напрямок розмиття з врахуванням співвідношення сторін
-//зазвичай одна з координат = 0, (напрямок або виртикальний або горизонтальний)
+uniform vec2 direction; //The direction of blur taking into account the aspect ratio of image
+//step in noramalized coords
+//the direction should be (1/imageWidth, 0.0) for horizontal glur, (0.0, 1/imageHeight) for vertical
 uniform float[MAX_SIZE] coeffVector;
 uniform float gamma;
 
